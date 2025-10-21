@@ -1,0 +1,12 @@
+John Doe
+Software Engineer
+
+Experience:
+- Built REST APIs in Spring Boot
+- Frontend with React and Tailwind CSS
+
+Education:
+- B.S. Computer Science
+
+Skills:
+Java, Spring, SQL, Docker, Kubernetes, AWS
