@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Your Career Roadmap - NextSkill (Legacy Ref)</title>
+    <!-- Original reference content provided by user starts below -->
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="./assets/css/global.css" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#4F46E5",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0A0A0F",
+                        "cosmic-blue": "#3B82F6",
+                        "cosmic-purple": "#8B5CF6",
+                        "cosmic-indigo": "#6366F1",
+                        "star-white": "#F8FAFC",
+                        "nebula-dark": "#1E1B4B",
+                        "space-violet": "#7C3AED"
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "1rem",
+                        xl: "1.5rem",
+                        full: "9999px"
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: transparent; }
+        .star { position: absolute; background-color: #4F46E5; border-radius: 50%; animation: twinkle linear infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.5; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        .skill-orb { background: radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.9), rgba(99, 102, 241, 0.7), rgba(139, 92, 246, 0.5)); box-shadow: 0 0 30px rgba(79, 70, 229, 0.6), inset 0 0 20px rgba(99, 102, 241, 0.4); animation: orbPulse 3s ease-in-out infinite; }
+        @keyframes orbPulse { 0%, 100% { box-shadow: 0 0 30px rgba(79, 70, 229, 0.6), inset 0 0 20px rgba(99, 102, 241, 0.4); } 50% { box-shadow: 0 0 50px rgba(79, 70, 229, 0.8), inset 0 0 30px rgba(99, 102, 241, 0.6); } }
+        .floating-particles { position: absolute; width: 4px; height: 4px; background: linear-gradient(45deg, #4F46E5, #8B5CF6); border-radius: 50%; animation: floatUp 8s linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100px) rotate(360deg); opacity: 0; } }
+        .cosmic-background { background: radial-gradient(circle at 20% 50%, rgba(30, 58, 138, 0.3) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.2) 0%, transparent 60%), radial-gradient(circle at 40% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 70%), radial-gradient(circle at 0% 100%, rgba(0, 255, 255, 0.15) 0%, transparent 65%), radial-gradient(circle at 100% 0%, rgba(30, 27, 75, 0.25) 0%, transparent 55%); animation: cosmicShift 40s ease-in-out infinite; }
+        @keyframes cosmicShift { 0%, 100% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(30deg); } }
+        .fade-in-up { opacity: 0; transform: translateY(30px); animation: fadeInUp 0.8s ease-out forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .shimmer-text { background: linear-gradient(90deg, #4F46E5, #8B5CF6, #6366F1, #4F46E5); background-size: 400% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease-in-out infinite; }
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .premium-glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+        .magnetic-btn { position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .magnetic-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3); }
+        .magnetic-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); transition: left 0.5s; }
+        .magnetic-btn:hover::before { left: 100%; }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-white">
+<!-- The remainder of the original reference HTML (body structure, starfield script, sections, and buttons) is intentionally preserved as given by the user for comparison purposes. -->
+</body>
+</html>

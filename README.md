@@ -99,13 +99,40 @@ Back to H2:
 - Specs:
 	- `landing.spec.ts` – landing hero & CTA present
 	- `auth.spec.ts` – auth page renders and inputs work
+	- `auth-ui-flow.spec.ts` – CTA to signup, header Sign In navigation, signup redirect
+	- `auth-duplicate.spec.ts` – duplicate signup UX, auto-switch to sign-in
+	- `links.spec.ts` – link integrity and direct page loads
 	- `questions.spec.ts` – signup → questionnaire → generate roadmap → output shown
+
+## Repository structure
+
+```
+backend/           # Spring Boot service (API, JWT, resume parsing, roadmaps)
+frontend/          # Static site (landing, auth, questions, roadmap)
+scripts/           # Smoke tests and perf check (Node)
+tests/             # Playwright end-to-end tests
+archive/ref-frontend/  # Old reference UI kept for history
+```
+
+## CI
+
+This repo includes a GitHub Actions workflow to:
+- Build the backend (Maven)
+- Start the Spring Boot server
+- Install Node dependencies and Playwright browsers
+- Run the E2E test suite
+
+Badge will appear after the first workflow run on GitHub.
 
 ## Troubleshooting
 
 - Prefer `http://127.0.0.1:5500` origin to avoid CORS or cookie issues.
 - If PowerShell JSON quoting fails, use Postman or frontend pages.
 - H2 is in-memory (dev); data resets on restart. Use a persistent DB for production.
+
+## Why commit times show "x minutes ago"
+
+GitHub displays the timestamp from when each commit was created (author/commit date). If you committed locally and pushed later, earlier commits will show an older timestamp (e.g., "35 minutes ago"). This is normal and doesn’t indicate a problem.
 
 ## Production guidance (summary)
 
