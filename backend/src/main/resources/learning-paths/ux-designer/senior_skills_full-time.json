@@ -1,0 +1,45 @@
+{
+  "role": "ux-designer",
+  "experience": "senior",
+  "priority": "skills",
+  "timeCommitment": "full-time",
+  "title": "Ux Designer Senior - Skills Focus",
+  "difficulty": "Advanced",
+  "duration_weeks": 14,
+  "skills": [
+    "User Research",
+    "Figma",
+    "Prototyping",
+    "Design Systems",
+    "User Testing",
+    "Wireframing",
+    "Information Architecture"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 5,
+      "skills": [
+        "User Research",
+        "Figma",
+        "Prototyping"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 5,
+      "skills": [
+        "Design Systems",
+        "User Testing",
+        "Wireframing"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 4,
+      "skills": [
+        "Information Architecture"
+      ]
+    }
+  ]
+}

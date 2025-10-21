@@ -1,0 +1,679 @@
+================================================================================
+  NEXTSKILL - TESTING & QUICK START GUIDE
+================================================================================
+
+📋 TABLE OF CONTENTS
+--------------------
+1. Prerequisites
+2. Quick Start (Copy & Paste Commands)
+3. Testing Endpoints (Manual)
+4. Automated Tests
+5. Troubleshooting
+6. Production Checklist
+7. Architecture Verification
+
+================================================================================
+1. PREREQUISITES
+================================================================================
+
+✅ Installed & Verified:
+  - Java 17 (check: java -version)
+  - Node.js 18+ (check: node -v)
+  - Maven wrapper included (mvnw.cmd)
+
+✅ Ports Required:
+  - 8080 (Backend - Spring Boot)
+  - 5500 (Frontend - http-server)
+
+================================================================================
+2. QUICK START (COPY & PASTE COMMANDS)
+================================================================================
+
+A. INITIAL SETUP (Run once)
+----------------------------
+# Navigate to project root
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+
+# Install Node dependencies
+npm ci
+
+# Build backend
+cd backend
+.\mvnw.cmd clean package -DskipTests
+cd ..
+
+
+B. START SERVERS (Every time you test)
+---------------------------------------
+OPTION 1: Background processes (Recommended for testing)
+---------------------------------------------------------
+# Terminal 1 - Start Backend JAR in background
+powershell -NoProfile -Command "Start-Process -FilePath 'c:\Program Files\Java\jdk-17\bin\java.exe' -ArgumentList '-jar','c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend\target\backend-0.0.1-SNAPSHOT.jar' -WorkingDirectory 'c:\Users\nkk77\Desktop\gpt5\nextskill-project' -WindowStyle Hidden"
+
+# Wait 10 seconds for backend to start, then verify health:
+powershell -NoProfile -Command "Start-Sleep -Seconds 10; iwr http://127.0.0.1:8080/actuator/health -UseBasicParsing | Select-Object StatusCode,@{N='Body';E={$_.Content}}"
+
+# Terminal 2 - Start Frontend in background
+powershell -NoProfile -Command "Start-Process -FilePath 'node' -ArgumentList 'node_modules\http-server\bin\http-server','-a','127.0.0.1','-p','5500','.' -WorkingDirectory 'c:\Users\nkk77\Desktop\gpt5\nextskill-project' -WindowStyle Hidden"
+
+# Verify frontend:
+powershell -NoProfile -Command "Start-Sleep -Seconds 2; iwr http://127.0.0.1:5500/frontend/index.html -UseBasicParsing | Select-Object StatusCode"
+
+
+OPTION 2: Foreground (See logs in real-time)
+---------------------------------------------
+# Terminal 1 - Backend with logs
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd spring-boot:run
+
+# Terminal 2 - Frontend
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run serve:frontend
+
+
+C. RUN TESTS
+------------
+# Smoke test (verifies auth + JWT + protected endpoints)
+npm run smoke:auth
+
+# Expected output:
+# Signing up: <unique-email>
+# JWT length: 172
+# Protected endpoint OK; roadmaps count = 0
+# AUTH_SMOKE_OK
+
+# Playwright E2E tests (landing, auth, full flow)
+npm run test:e2e
+
+# Expected output:
+# Running 3 tests using 3 workers
+#   ✓  1 landing.spec.ts
+#   ✓  2 auth.spec.ts
+#   ✓  3 questions.spec.ts
+#   3 passed (5.8s)
+
+
+D. STOP SERVERS
+---------------
+# Find and kill Java backend
+powershell -NoProfile -Command "Get-Process -Name java -ErrorAction SilentlyContinue | Where-Object {$_.Path -like '*jdk-17*'} | Stop-Process -Force"
+
+# Find and kill Node frontend
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 5500 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"
+
+================================================================================
+3. TESTING ENDPOINTS (MANUAL)
+================================================================================
+
+BASE URL: http://127.0.0.1:8080
+
+A. HEALTH CHECK (Public)
+-------------------------
+GET http://127.0.0.1:8080/actuator/health
+
+Expected Response (200):
+{"status":"UP"}
+
+
+B. SIGNUP (Public)
+-------------------
+POST http://127.0.0.1:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "SecurePass123!"
+}
+
+Expected Response (200):
+{"token":"eyJhbGciOiJIUzI1NiJ9..."}
+
+💡 COPY THE TOKEN for next requests!
+
+
+C. SIGNIN (Public)
+-------------------
+POST http://127.0.0.1:8080/api/auth/signin
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "SecurePass123!"
+}
+
+Expected Response (200):
+{"token":"eyJhbGciOiJIUzI1NiJ9..."}
+
+
+D. JOB PROFILES (Public)
+-------------------------
+GET http://127.0.0.1:8080/api/job-profiles
+
+Expected Response (200):
+["software-engineer","data-scientist","data-engineer","product-manager","ux-designer","devops-engineer"]
+
+
+E. SUBMIT QUESTIONNAIRE (Authenticated)
+----------------------------------------
+POST http://127.0.0.1:8080/api/questions/submit
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "role": "software-engineer",
+  "experience": "junior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "answers": {
+    "focus": "skills",
+    "preferredResources": "YouTube"
+  }
+}
+
+Expected Response (200):
+1  (questionnaire ID)
+
+
+F. UPLOAD RESUME (Authenticated)
+---------------------------------
+POST http://127.0.0.1:8080/api/resumes/upload
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: multipart/form-data
+
+(Upload a .pdf, .doc, .docx, or .txt file with field name "file")
+
+Expected Response (200):
+"parsed: <extracted text preview...>"
+
+
+G. GENERATE ROADMAP - File-First (Authenticated)
+-------------------------------------------------
+POST http://127.0.0.1:8080/api/roadmaps/generate
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "role": "software-engineer",
+  "experience": "junior",
+  "priority": "skills",
+  "timeCommitment": "part-time"
+}
+
+Expected Response (200):
+{
+  "role": "software-engineer",
+  "experience": "junior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "modules": [
+    {"title": "CS Fundamentals", "items": ["Big-O", "Data Structures", "Algorithms basics"]},
+    {"title": "Language Basics", "items": ["Java syntax", "Collections", "Streams"]}
+  ]
+}
+
+(This reads from: backend/src/main/resources/learning-paths/software-engineer/software-engineer_junior_skills_part-time.json)
+
+
+H. GENERATE ROADMAP - AI Signals (Authenticated)
+-------------------------------------------------
+POST http://127.0.0.1:8080/api/roadmaps/generate
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "role": "data-scientist",
+  "experience": "mid",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "answers": {
+    "focus": "machine-learning",
+    "preferredResources": "Kaggle"
+  },
+  "resumeText": "5 years Python, pandas, scikit-learn"
+}
+
+Expected Response (200):
+{
+  "role": "data-scientist",
+  "experience": "mid",
+  "priority": "projects-ml-focused",
+  "timeCommitment": "full-time",
+  "syllabus": [
+    {"week": 1, "topic": "Advanced ML Models", "assignments": [...]},
+    ...
+  ],
+  "resources": [...]
+}
+
+(This uses AI generator with signals, bypassing JSON files)
+
+
+I. GET MY ROADMAPS (Authenticated)
+-----------------------------------
+GET http://127.0.0.1:8080/api/roadmaps/mine
+Authorization: Bearer YOUR_TOKEN_HERE
+
+Expected Response (200):
+[
+  {
+    "id": 1,
+    "role": "software-engineer",
+    "experience": "junior",
+    "priority": "skills",
+    "timeCommitment": "part-time",
+    "source": "json",
+    "createdAt": "2025-10-21T01:42:15.667Z"
+  }
+]
+
+
+J. GET ROADMAP BY ID (Authenticated)
+-------------------------------------
+GET http://127.0.0.1:8080/api/roadmaps/1
+Authorization: Bearer YOUR_TOKEN_HERE
+
+Expected Response (200):
+{
+  "id": 1,
+  "role": "software-engineer",
+  "experience": "junior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "source": "json",
+  "createdAt": "2025-10-21T01:42:15.667Z",
+  "contentJson": "{\"role\":\"software-engineer\", ...}"
+}
+
+================================================================================
+4. AUTOMATED TESTS
+================================================================================
+
+A. Smoke Test (Auth + Protected Endpoint)
+------------------------------------------
+Command:
+npm run smoke:auth
+
+What it tests:
+✅ POST /api/auth/signup → JWT token generation
+✅ Authorization: Bearer <token> → Protected endpoint access
+✅ GET /api/roadmaps/mine → Authenticated list
+
+Expected Output:
+Signing up: <timestamp-random>@test.local
+JWT length: 172
+Protected endpoint OK; roadmaps count = 0
+AUTH_SMOKE_OK
+
+
+B. Playwright E2E Tests
+------------------------
+Command:
+npm run test:e2e
+
+What it tests:
+✅ landing.spec.ts → Landing page loads with hero & CTA
+✅ auth.spec.ts → Auth page renders and accepts input
+✅ questions.spec.ts → Full flow: signup → questions → generate roadmap → output shown
+
+Expected Output:
+Running 3 tests using 3 workers
+  ✓  1 landing.spec.ts (6s)
+  ✓  2 auth.spec.ts (9s)
+  ✓  3 questions.spec.ts (4s)
+  3 passed (5.8s)
+
+
+C. Run Specific Test
+---------------------
+# Run only the questions flow test
+npx playwright test tests/questions.spec.ts
+
+# Run with UI mode (debugging)
+npm run test:e2e:ui
+
+================================================================================
+5. TROUBLESHOOTING
+================================================================================
+
+ISSUE: Port 8080 already in use
+--------------------------------
+SYMPTOM: Backend fails to start with "Port 8080 already in use"
+
+FIX:
+# Find process using port 8080
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 8080 -State Listen | Select-Object -ExpandProperty OwningProcess"
+
+# Kill the process (replace PID with actual number)
+powershell -NoProfile -Command "Stop-Process -Id <PID> -Force"
+
+# Or kill all Java processes
+powershell -NoProfile -Command "Get-Process -Name java -ErrorAction SilentlyContinue | Stop-Process -Force"
+
+
+ISSUE: Port 5500 already in use
+--------------------------------
+SYMPTOM: Frontend server fails with "EADDRINUSE: address already in use 127.0.0.1:5500"
+
+FIX:
+# Find and kill process on port 5500
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 5500 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"
+
+
+ISSUE: Backend JAR won't start (no main manifest)
+--------------------------------------------------
+SYMPTOM: "no main manifest attribute, in backend-0.0.1-SNAPSHOT.jar"
+
+FIX:
+# Rebuild with Spring Boot repackage goal
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd clean package -DskipTests
+
+
+ISSUE: CORS errors in browser console
+--------------------------------------
+SYMPTOM: "Access to fetch at 'http://127.0.0.1:8080/api/...' has been blocked by CORS policy"
+
+CHECK:
+✅ Frontend is served from http://127.0.0.1:5500 (NOT localhost:5500)
+✅ Backend CORS allows http://127.0.0.1:5500 (check WebConfig.java)
+✅ Browser is not blocking cookies (check Settings → Privacy)
+
+FIX:
+# If using localhost instead of 127.0.0.1, update frontend URLs in:
+# - frontend/auth.html (line 36)
+# - frontend/questions.html (line 111)
+# Change to: http://127.0.0.1:8080
+
+
+ISSUE: JWT token validation fails (403 Forbidden)
+--------------------------------------------------
+SYMPTOM: Authenticated endpoints return 403 even with valid token
+
+CHECK:
+✅ Token format: "Bearer <token>" (space after Bearer)
+✅ Token not expired (24 hour validity)
+✅ JWT secret consistent (check application.properties)
+
+FIX:
+# Get a fresh token via /api/auth/signin
+# Ensure Authorization header format:
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+
+
+ISSUE: Flyway migration errors on startup
+------------------------------------------
+SYMPTOM: "FlywayException: Found non-empty schema(s) `PUBLIC` without schema history table!"
+
+FIX (H2 in-memory):
+# Just restart backend; H2 resets on each run
+
+FIX (Postgres with stale migrations):
+# Connect to DB and drop/recreate schema, or:
+docker compose down -v
+docker compose up -d
+
+
+ISSUE: Resume upload fails (unsupported file type)
+---------------------------------------------------
+SYMPTOM: Backend returns "unsupported file type"
+
+CHECK:
+✅ File is .pdf, .doc, .docx, or .txt
+✅ Content-Type header matches file type
+✅ Multipart form-data field name is "file"
+
+ALLOWED MIME TYPES (ValidationUtil.java):
+- application/pdf
+- application/msword
+- application/vnd.openxmlformats-officedocument.wordprocessingml.document
+- text/plain
+
+
+ISSUE: Playwright tests fail to connect
+----------------------------------------
+SYMPTOM: "Error: page.goto: net::ERR_CONNECTION_REFUSED"
+
+CHECK:
+✅ Backend running on http://127.0.0.1:8080
+✅ Frontend running on http://127.0.0.1:5500
+✅ Playwright baseURL set to http://127.0.0.1:5500 (playwright.config.js)
+
+FIX:
+# Verify servers are up before running tests
+powershell -NoProfile -Command "iwr http://127.0.0.1:8080/actuator/health -UseBasicParsing"
+powershell -NoProfile -Command "iwr http://127.0.0.1:5500/frontend/index.html -UseBasicParsing"
+
+
+ISSUE: AI roadmap returns generic plan
+---------------------------------------
+SYMPTOM: Roadmap doesn't reflect resume/answers even when provided
+
+CHECK:
+✅ Request includes "answers" or "resumeText" fields
+✅ Backend logs show "AI signals mode" (if verbose logging enabled)
+✅ Source field in response is "ai-signals" (not "json" or "ai")
+
+EXAMPLE REQUEST:
+{
+  "role": "software-engineer",
+  "experience": "mid",
+  "priority": "skills",
+  "timeCommitment": "full-time",
+  "answers": {"focus": "distributed-systems"},
+  "resumeText": "10 years Java, Spring Boot, Kubernetes"
+}
+
+
+ISSUE: Database connection fails (Postgres profile)
+----------------------------------------------------
+SYMPTOM: "Unable to create initial connections of pool" or "Connection refused"
+
+CHECK:
+✅ Docker Postgres running: docker compose ps
+✅ Postgres port 5432 not blocked by firewall
+✅ Environment variable POSTGRES_PASSWORD matches docker-compose.yml
+
+FIX:
+# Restart Postgres container
+docker compose down
+docker compose up -d
+
+# Verify connection
+docker exec -it nextskill-postgres psql -U nextskill -d nextskill -c "\dt"
+
+
+ISSUE: Build fails with "package does not exist"
+-------------------------------------------------
+SYMPTOM: Maven compile errors for missing packages
+
+FIX:
+# Clean and rebuild with dependency resolution
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd clean install -U
+
+================================================================================
+6. PRODUCTION CHECKLIST
+================================================================================
+
+Before deploying to production:
+
+🔐 SECURITY
+-----------
+☐ Change security.jwt.secret to a strong random value (env var)
+☐ Set POSTGRES_PASSWORD via environment variable
+☐ Disable H2 console (spring.h2.console.enabled=false)
+☐ Restrict CORS origins to production frontend domain
+☐ Enable HTTPS (use reverse proxy like Nginx)
+☐ Review and update actuator endpoints (expose only /health)
+
+📊 DATABASE
+-----------
+☐ Use Postgres (not H2) with persistent volume
+☐ Run Flyway migrations in staging before production
+☐ Set up database backups (pg_dump cron job or cloud backup)
+☐ Monitor connection pool (HikariCP settings)
+
+🚀 DEPLOYMENT
+-------------
+☐ Build JAR: mvnw clean package -DskipTests
+☐ Deploy JAR to server: backend/target/backend-0.0.1-SNAPSHOT.jar
+☐ Set JVM options: java -Xms512m -Xmx2g -jar backend-0.0.1-SNAPSHOT.jar
+☐ Use systemd/supervisor to manage backend process
+☐ Serve frontend via Nginx/Apache (not http-server)
+☐ Configure reverse proxy for backend (/api → http://localhost:8080)
+
+📈 MONITORING
+-------------
+☐ Set up logging (Logback configuration)
+☐ Monitor /actuator/health via uptime service
+☐ Track error rates (Sentry, Datadog, or CloudWatch)
+☐ Set up alerts for high memory/CPU usage
+
+🧪 TESTING
+----------
+☐ Run smoke tests against staging environment
+☐ Run full E2E tests before each deployment
+☐ Verify CORS and JWT on production domain
+☐ Load test with JMeter or k6
+
+================================================================================
+7. ARCHITECTURE VERIFICATION
+================================================================================
+
+✅ INITIAL PROMPT REQUIREMENTS CHECK
+-------------------------------------
+☑ Exact landing page (index.html with Three.js 0.160.0 galaxy)
+☑ Spring Boot backend (Java 17, Spring Boot 3.4.10)
+☑ JWT security (stateless, HS256, 24h validity)
+☑ Global CORS (WebConfig, no @CrossOrigin)
+☑ 72 learning paths (6 roles × 3 exp × 2 priority × 2 time)
+☑ Flyway migrations (V1-V4: users, resumes, questionnaires, roadmaps)
+☑ Endpoints:
+    ☑ POST /api/auth/signup
+    ☑ POST /api/auth/signin
+    ☑ GET /actuator/health
+    ☑ POST /api/questions/submit
+    ☑ POST /api/resumes/upload (Apache Tika parsing)
+    ☑ POST /api/roadmaps/generate (file-first + AI fallback)
+    ☑ GET /api/roadmaps/mine
+    ☑ GET /api/roadmaps/{id}
+    ☑ GET /api/job-profiles
+☑ H2 dev database (in-memory)
+☑ Postgres profile (docker-compose.yml)
+☑ Playwright E2E tests (baseURL: http://127.0.0.1:5500)
+☑ Frontend: auth.html, questions.html, about.html
+☑ Smoke test script (scripts/smoke-auth.mjs)
+
+
+✅ AI ENHANCEMENT CHECK (Added Feature)
+----------------------------------------
+☑ AI signals mode (when resumeText or answers present)
+☑ Deterministic weekly plan generator (LearningPathMLService)
+☑ File-first → AI fallback hierarchy
+☑ Source tracking (json | ai | ai-signals)
+☑ Resume parsing with Apache Tika
+☑ Questionnaire persistence with answers JSON
+
+
+✅ KEY FILES MANIFEST
+----------------------
+Backend:
+  ☑ pom.xml (Spring Boot 3.4.10, PostgreSQL 42.7.3, Tika 2.9.2)
+  ☑ BackendApplication.java
+  ☑ SecurityConfiguration.java (stateless JWT, protected routes)
+  ☑ WebConfig.java (global CORS)
+  ☑ GlobalExceptionHandler.java (unified error responses)
+  ☑ JwtAuthenticationFilter.java (Bearer token validation)
+  ☑ JwtService.java (HS256 signing/verification)
+  ☑ Controllers: Auth, Resume, Roadmap, RoadmapHistory, Questionnaire, JobProfile
+  ☑ Services: Auth, User, JWT, LearningPathML, ResumeAnalysis
+  ☑ Models: User, ResumeUpload, QuestionnaireResponse, Roadmap
+  ☑ Repositories: User, ResumeUpload, Questionnaire, Roadmap
+  ☑ Migrations: V1__init.sql, V2__resume_uploads.sql, V3__questionnaire_responses.sql, V4__roadmaps.sql
+  ☑ 72 JSONs: learning-paths/{role}/{role}_{exp}_{priority}_{time}.json
+
+Frontend:
+  ☑ index.html (exact galaxy landing, Three.js 0.160.0)
+  ☑ auth.html (signup/signin with JWT storage)
+  ☑ questions.html (questionnaire + roadmap generation)
+  ☑ about.html
+
+Tests:
+  ☑ playwright.config.js (baseURL: http://127.0.0.1:5500)
+  ☑ tests/landing.spec.ts
+  ☑ tests/auth.spec.ts
+  ☑ tests/questions.spec.ts
+  ☑ scripts/smoke-auth.mjs
+
+Config:
+  ☑ docker-compose.yml (Postgres 16)
+  ☑ application.properties (H2 dev)
+  ☑ application-postgres.properties (Postgres profile)
+  ☑ application-prod.properties (production defaults)
+  ☑ additional-spring-configuration-metadata.json
+
+================================================================================
+8. QUICK REFERENCE - COMMON COMMANDS
+================================================================================
+
+# Full clean rebuild
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd clean package -DskipTests
+
+# Start backend (foreground with logs)
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd spring-boot:run
+
+# Start backend JAR (background)
+powershell -NoProfile -Command "Start-Process -FilePath 'c:\Program Files\Java\jdk-17\bin\java.exe' -ArgumentList '-jar','c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend\target\backend-0.0.1-SNAPSHOT.jar' -WorkingDirectory 'c:\Users\nkk77\Desktop\gpt5\nextskill-project' -WindowStyle Hidden"
+
+# Start frontend (foreground)
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run serve:frontend
+
+# Start frontend (background)
+powershell -NoProfile -Command "Start-Process -FilePath 'node' -ArgumentList 'node_modules\http-server\bin\http-server','-a','127.0.0.1','-p','5500','.' -WorkingDirectory 'c:\Users\nkk77\Desktop\gpt5\nextskill-project' -WindowStyle Hidden"
+
+# Run smoke test
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run smoke:auth
+
+# Run E2E tests
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run test:e2e
+
+# Check backend health
+powershell -NoProfile -Command "iwr http://127.0.0.1:8080/actuator/health -UseBasicParsing | Select-Object -ExpandProperty Content"
+
+# Check frontend
+powershell -NoProfile -Command "iwr http://127.0.0.1:5500/frontend/index.html -UseBasicParsing | Select-Object StatusCode"
+
+# Kill backend
+powershell -NoProfile -Command "Get-Process -Name java -ErrorAction SilentlyContinue | Where-Object {$_.Path -like '*jdk-17*'} | Stop-Process -Force"
+
+# Kill frontend
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 5500 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"
+
+# Postgres via Docker
+docker compose up -d
+docker compose down
+docker compose logs -f
+
+# Run with Postgres profile
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=postgres
+
+================================================================================
+END OF TESTING GUIDE
+================================================================================
+
+Last Updated: October 21, 2025
+Project: NextSkill - Intelligent Career Development Platform
+Version: 1.0.0
+
+For issues or questions, review:
+- README.md (project overview)
+- backend/pom.xml (dependencies)
+- playwright.config.js (test configuration)
+
+Happy Testing! 🚀

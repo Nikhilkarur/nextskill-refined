@@ -1,0 +1,47 @@
+{
+  "role": "data-engineer",
+  "experience": "mid",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "title": "Data Engineer Mid - Skills Focus",
+  "difficulty": "Intermediate",
+  "duration_weeks": 24,
+  "skills": [
+    "Python",
+    "SQL",
+    "Apache Spark",
+    "ETL",
+    "Data Warehousing",
+    "Kafka",
+    "Airflow",
+    "AWS"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 8,
+      "skills": [
+        "Python",
+        "SQL",
+        "Apache Spark"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 8,
+      "skills": [
+        "ETL",
+        "Data Warehousing",
+        "Kafka"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 8,
+      "skills": [
+        "Airflow",
+        "AWS"
+      ]
+    }
+  ]
+}

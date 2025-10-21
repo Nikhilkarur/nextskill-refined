@@ -1,0 +1,47 @@
+{
+  "role": "devops-engineer",
+  "experience": "junior",
+  "priority": "projects",
+  "timeCommitment": "part-time",
+  "title": "Devops Engineer Junior - Projects Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 27,
+  "skills": [
+    "Kubernetes",
+    "Docker",
+    "AWS",
+    "Terraform",
+    "CI/CD",
+    "Linux",
+    "Monitoring",
+    "Security"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 9,
+      "skills": [
+        "Kubernetes",
+        "Docker",
+        "AWS"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 9,
+      "skills": [
+        "Terraform",
+        "CI/CD",
+        "Linux"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 9,
+      "skills": [
+        "Monitoring",
+        "Security"
+      ]
+    }
+  ]
+}

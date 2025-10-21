@@ -1,0 +1,15 @@
+{
+  "name": "nextskill-project",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve:frontend": "http-server -a 127.0.0.1 -p 5500 .",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "smoke:auth": "node ./scripts/smoke-auth.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "http-server": "^14.1.1"
+  }
+}

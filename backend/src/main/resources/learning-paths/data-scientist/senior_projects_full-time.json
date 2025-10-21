@@ -1,0 +1,47 @@
+{
+  "role": "data-scientist",
+  "experience": "senior",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "title": "Data Scientist Senior - Projects Focus",
+  "difficulty": "Advanced",
+  "duration_weeks": 14,
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Statistics",
+    "Pandas",
+    "TensorFlow",
+    "SQL",
+    "Jupyter",
+    "Data Visualization"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 5,
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Statistics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 5,
+      "skills": [
+        "Pandas",
+        "TensorFlow",
+        "SQL"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 4,
+      "skills": [
+        "Jupyter",
+        "Data Visualization"
+      ]
+    }
+  ]
+}

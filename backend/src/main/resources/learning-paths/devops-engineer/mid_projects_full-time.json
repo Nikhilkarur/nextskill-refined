@@ -1,0 +1,47 @@
+{
+  "role": "devops-engineer",
+  "experience": "mid",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "title": "Devops Engineer Mid - Projects Focus",
+  "difficulty": "Intermediate",
+  "duration_weeks": 16,
+  "skills": [
+    "Kubernetes",
+    "Docker",
+    "AWS",
+    "Terraform",
+    "CI/CD",
+    "Linux",
+    "Monitoring",
+    "Security"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "Kubernetes",
+        "Docker",
+        "AWS"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "Terraform",
+        "CI/CD",
+        "Linux"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 5,
+      "skills": [
+        "Monitoring",
+        "Security"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "role": "ux-designer",
+  "experience": "mid",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "title": "Ux Designer Mid - Projects Focus",
+  "difficulty": "Intermediate",
+  "duration_weeks": 16,
+  "skills": [
+    "User Research",
+    "Figma",
+    "Prototyping",
+    "Design Systems",
+    "User Testing",
+    "Wireframing",
+    "Information Architecture"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "User Research",
+        "Figma",
+        "Prototyping"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "Design Systems",
+        "User Testing",
+        "Wireframing"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 5,
+      "skills": [
+        "Information Architecture"
+      ]
+    }
+  ]
+}

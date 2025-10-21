@@ -1,0 +1,47 @@
+{
+  "role": "data-scientist",
+  "experience": "mid",
+  "priority": "projects",
+  "timeCommitment": "part-time",
+  "title": "Data Scientist Mid - Projects Focus",
+  "difficulty": "Intermediate",
+  "duration_weeks": 24,
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Statistics",
+    "Pandas",
+    "TensorFlow",
+    "SQL",
+    "Jupyter",
+    "Data Visualization"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 8,
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Statistics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 8,
+      "skills": [
+        "Pandas",
+        "TensorFlow",
+        "SQL"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 8,
+      "skills": [
+        "Jupyter",
+        "Data Visualization"
+      ]
+    }
+  ]
+}

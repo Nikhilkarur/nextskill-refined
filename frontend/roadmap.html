@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Roadmap - NextSkill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load HTTP helper for backend API calls -->
+    <script src="./assets/js/http.js?v=OCT21D"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#00FF88',
+                        'background-light': '#0A0A0A',
+                        'background-dark': '#050505',
+                        'text-light': '#FFFFFF',
+                        'text-muted': '#888888',
+                        'accent-600': '#10B981',
+                        'galaxy-purple': '#8B5CF6',
+                        'galaxy-blue': '#3B82F6',
+                        'galaxy-cyan': '#06B6D4'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #FFFFFF;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="glass-card border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="goHome()" class="px-4 py-2 glass-card rounded-lg hover:bg-white/10 transition-all">
+                        ← Home
+                    </button>
+                    <h1 class="text-2xl font-bold text-primary">Your Learning Roadmap</h1>
+                </div>
+                <div class="text-sm text-gray-300" id="user-welcome">Welcome back!</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- Hero Section -->
+        <div class="glass-card rounded-xl p-6 mb-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">
+                🚀 <span id="personalized-title">Software Engineering Journey</span>
+            </h2>
+            <p class="text-lg text-gray-300 mb-6">Your personalized learning path based on your goals and experience</p>
+            
+            <!-- Simple Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass-card p-4 rounded-lg">
+                    <div class="text-2xl font-bold text-primary" id="total-skills">8</div>
+                    <div class="text-sm text-gray-400">Skills to Learn</div>
+                </div>
+                <div class="glass-card p-4 rounded-lg">
+                    <div class="text-2xl font-bold text-galaxy-blue" id="estimated-time">16 weeks</div>
+                    <div class="text-sm text-gray-400">Estimated Time</div>
+                </div>
+                <div class="glass-card p-4 rounded-lg">
+                    <div class="text-2xl font-bold text-galaxy-purple" id="difficulty-level">Intermediate</div>
+                    <div class="text-sm text-gray-400">Difficulty</div>
+                </div>
+                <div class="glass-card p-4 rounded-lg">
+                    <div class="text-2xl font-bold text-galaxy-cyan" id="completion-rate">0%</div>
+                    <div class="text-sm text-gray-400">Progress</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Path -->
+        <div class="glass-card rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-6" id="path-title">🚀 Software Engineering Journey</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="path-phases">
+                <!-- Learning phases will be populated here -->
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center">
+            <button id="start-learning-btn" onclick="startLearning()" class="px-8 py-4 bg-gradient-to-r from-primary to-accent-600 text-black rounded-lg font-bold text-lg hover:scale-105 transition-all">
+                Start Learning Journey
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentPath = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Roadmap page initializing...');
+            
+            // Check for test parameter
+            const urlParams = new URLSearchParams(globalThis.location.search);
+            const testRole = urlParams.get('test');
+            
+            if (testRole) {
+                console.log('🧪 Test mode - simulating role:', testRole);
+                // Simulate questionnaire answers for testing
+                const testAnswers = {
+                    1: testRole,
+                    2: 'entry', 
+                    3: 'technical-skills',
+                    4: '10-hours'
+                };
+                localStorage.setItem('questionnaire-answers', JSON.stringify(testAnswers));
+                localStorage.removeItem('ns_token'); // Force local mode
+            }
+            
+            loadUserData();
+            setupInteractions();
+            
+            // Refresh progress every 5 seconds
+            setInterval(refreshProgress, 5000);
+        });
+
+        // Refresh progress from localStorage
+        function refreshProgress() {
+            const progress = JSON.parse(localStorage.getItem('userProgress') || '{}');
+            const completionRate = progress.completionPercent || 0;
+            const currentElement = document.getElementById('completion-rate');
+            
+            if (currentElement && currentElement.textContent !== `${completionRate}%`) {
+                currentElement.textContent = `${completionRate}%`;
+                showProgressUpdate(completionRate);
+            }
+        }
+
+        // Show progress update notification
+        function showProgressUpdate(completionRate) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 glass-card rounded-lg p-3 z-50 transform translate-x-full transition-transform duration-300';
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <div class="text-lg">📈</div>
+                    <div class="text-sm">
+                        <div class="font-bold text-primary">Progress Updated!</div>
+                        <div class="text-gray-300">${completionRate}% Complete</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // Load user data from questionnaire responses and backend
+        async function loadUserData() {
+            try {
+                // Check authentication
+                const token = localStorage.getItem('ns_token');
+                if (!token) {
+                    console.log('No auth token, using local fallback data');
+                    loadFallbackData();
+                    return;
+                }
+
+                console.log('🔄 Loading roadmap from backend...');
+                
+                // Try to load from backend first
+                try {
+                    const roadmaps = await globalThis.NSHttp.request('/api/roadmaps/mine');
+                    console.log('📊 Backend roadmaps:', roadmaps);
+                    
+                    if (roadmaps && roadmaps.length > 0) {
+                        // Get the most recent roadmap
+                        const latest = roadmaps.at(-1);
+                        console.log('📈 Using latest roadmap:', latest);
+                        
+                        // Fetch full details
+                        const detail = await globalThis.NSHttp.request(`/api/roadmaps/${latest.id}`);
+                        console.log('📋 Roadmap detail:', detail);
+                        
+                        if (detail && detail.contentJson) {
+                            // Parse and use backend roadmap
+                            const roadmapData = JSON.parse(detail.contentJson);
+                            currentPath = {
+                                career_path: mapRoleToDisplayName(detail.role),
+                                experience_level: detail.experience,
+                                commitment_level: detail.timeCommitment,
+                                priority: detail.priority,
+                                source: detail.source,
+                                roadmapData: roadmapData,
+                                backendId: detail.id
+                            };
+                            
+                            console.log('✅ Loaded from backend:', currentPath);
+                            updateRoadmapDisplay();
+                            showLoadedFromBackend();
+                            return;
+                        }
+                    }
+                } catch (apiError) {
+                    console.warn('⚠️ Backend roadmap load failed:', apiError.message);
+                }
+                
+                // Fallback to localStorage
+                loadFallbackData();
+                
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+                loadFallbackData();
+            }
+        }
+
+        // Load fallback data from localStorage or defaults
+        function loadFallbackData() {
+            try {
+                console.log('📦 Loading fallback data from localStorage...');
+                
+                // Try questionnaire answers first
+                const answers = JSON.parse(localStorage.getItem('questionnaire-answers') || '{}');
+                const lastRoadmap = localStorage.getItem('lastRoadmapJson');
+                
+                if (Object.keys(answers).length > 0) {
+                    console.log('📋 Found questionnaire answers:', answers);
+                    currentPath = {
+                        career_path: mapAnswerToCareerPath(answers[1]),
+                        experience_level: mapAnswerToExperience(answers[2]), 
+                        commitment_level: mapAnswerToCommitment(answers[4]),
+                        priority: mapAnswerToPriority(answers[3]),
+                        source: 'localStorage'
+                    };
+                    
+                    if (lastRoadmap) {
+                        try {
+                            currentPath.roadmapData = JSON.parse(lastRoadmap);
+                            console.log('🗂️ Found saved roadmap JSON');
+                        } catch {}
+                    }
+                } else {
+                    console.log('🔧 Using default fallback data');
+                    currentPath = {
+                        career_path: 'Software Engineer',
+                        experience_level: 'junior',
+                        commitment_level: 'part-time',
+                        skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git', 'HTML/CSS', 'APIs'],
+                        source: 'default'
+                    };
+                }
+                
+                updateRoadmapDisplay();
+                
+            } catch (error) {
+                console.error('❌ Error loading fallback data:', error);
+                // Ultimate fallback
+                currentPath = {
+                    career_path: 'Software Engineer',
+                    experience_level: 'junior',
+                    commitment_level: 'part-time',
+                    source: 'emergency-default'
+                };
+                updateRoadmapDisplay();
+            }
+        }
+
+        // Helper functions to map backend values to display names
+        function mapRoleToDisplayName(role) {
+            const roleMap = {
+                'software-engineer': 'Software Engineer',
+                'data-scientist': 'Data Scientist', 
+                'devops-engineer': 'DevOps Engineer',
+                'product-manager': 'Product Manager',
+                'ux-designer': 'UX Designer'
+            };
+            return roleMap[role] || 'Software Engineer';
+        }
+
+        function mapAnswerToCareerPath(answer) {
+            console.log('🔍 Mapping answer to career path:', answer);
+            const pathMap = {
+                'software-engineer': 'Software Engineer',
+                'data-scientist': 'Data Scientist',
+                'devops-engineer': 'DevOps Engineer', 
+                'product-manager': 'Product Manager',
+                'ui-ux-designer': 'UX Designer',
+                'cybersecurity-analyst': 'Cybersecurity Analyst'
+            };
+            const result = pathMap[answer] || 'Software Engineer';
+            console.log('✅ Mapped to:', result);
+            return result;
+        }
+
+        function mapAnswerToExperience(answer) {
+            const expMap = {
+                'entry': 'junior',
+                'mid': 'mid', 
+                'senior': 'senior'
+            };
+            return expMap[answer] || 'junior';
+        }
+
+        function mapAnswerToCommitment(answer) {
+            const commitMap = {
+                '5-hours': 'part-time',
+                '10-hours': 'full-time'
+            };
+            return commitMap[answer] || 'part-time';
+        }
+
+        function mapAnswerToPriority(answer) {
+            const priMap = {
+                'technical-skills': 'skills',
+                'soft-skills': 'projects'
+            };
+            return priMap[answer] || 'skills';
+        }
+
+        // Show indicator that data was loaded from backend
+        function showLoadedFromBackend() {
+            const indicator = document.createElement('div');
+            indicator.className = 'fixed top-4 right-4 bg-green-600 text-white px-3 py-2 rounded-lg text-sm z-50';
+            indicator.textContent = '✅ Loaded from backend';
+            document.body.appendChild(indicator);
+            setTimeout(() => indicator.remove(), 3000);
+        }
+
+        // Update the display with user's actual questionnaire data
+        function updateRoadmapDisplay() {
+            if (!currentPath) return;
+
+            console.log('🎨 Updating roadmap display with:', currentPath);
+
+            // Handle backend roadmap data
+            if (currentPath.roadmapData) {
+                updateFromBackendRoadmap(currentPath.roadmapData);
+                return;
+            }
+
+            // Fallback to simple display
+            const skillCount = currentPath.skills?.length || 8;
+            const estimatedWeeks = getEstimatedWeeks();
+            const difficultyLevel = getDifficultyLevel();
+            
+            document.getElementById('total-skills').textContent = skillCount;
+            document.getElementById('estimated-time').textContent = `${estimatedWeeks} weeks`;
+            document.getElementById('difficulty-level').textContent = difficultyLevel;
+            
+            const progress = JSON.parse(localStorage.getItem('userProgress') || '{}');
+            const completionRate = progress.completionPercent || 0;
+            document.getElementById('completion-rate').textContent = `${completionRate}%`;
+
+            generateSimpleLearningPath();
+
+            console.log('📊 Updated roadmap display:', {
+                skillCount,
+                estimatedWeeks,
+                difficultyLevel,
+                careerPath: currentPath.career_path,
+                source: currentPath.source
+            });
+        }
+
+        // Update display from backend roadmap JSON
+        function updateFromBackendRoadmap(roadmapData) {
+            try {
+                console.log('📋 Updating from backend roadmap data:', roadmapData);
+                
+                // Extract stats from roadmap data
+                const skills = roadmapData.skills || roadmapData.learning_objectives || [];
+                const phases = roadmapData.phases || roadmapData.roadmap_phases || [];
+                
+                const skillCount = skills.length || 8;
+                const totalWeeks = phases.reduce((sum, phase) => sum + (phase.duration_weeks || 4), 0) || getEstimatedWeeks();
+                const difficultyLevel = roadmapData.difficulty || getDifficultyLevel();
+                
+                document.getElementById('total-skills').textContent = skillCount;
+                document.getElementById('estimated-time').textContent = `${totalWeeks} weeks`;
+                document.getElementById('difficulty-level').textContent = difficultyLevel;
+                
+                const progress = JSON.parse(localStorage.getItem('userProgress') || '{}');
+                const completionRate = progress.completionPercent || 0;
+                document.getElementById('completion-rate').textContent = `${completionRate}%`;
+
+                // Update title
+                const title = roadmapData.title || `${currentPath.career_path} Journey`;
+                document.getElementById('personalized-title').textContent = title;
+                document.getElementById('path-title').textContent = title;
+
+                // Generate phases from backend data
+                generatePhasesFromBackend(phases);
+                
+                console.log('✅ Updated from backend roadmap');
+                
+            } catch (error) {
+                console.error('❌ Error updating from backend roadmap:', error);
+                // Fallback to simple display
+                generateSimpleLearningPath();
+            }
+        }
+
+        // Generate phases from backend roadmap data
+        function generatePhasesFromBackend(phases) {
+            const pathContainer = document.getElementById('path-phases');
+            
+            if (!phases || phases.length === 0) {
+                generateSimpleLearningPath();
+                return;
+            }
+            
+            const colors = ['primary', 'galaxy-blue', 'galaxy-cyan', 'galaxy-purple'];
+            const emojis = ['🔧', '🌐', '⚙️', '🚀', '📊', '🎯'];
+            
+            pathContainer.innerHTML = phases.slice(0, 6).map((phase, index) => `
+                <div class="glass-card p-4 rounded-lg text-center">
+                    <div class="text-3xl mb-2">${emojis[index] || '📚'}</div>
+                    <h3 class="text-lg font-bold text-${colors[index % colors.length]} mb-2">${phase.name || phase.title || `Phase ${index + 1}`}</h3>
+                    <div class="text-sm text-gray-400">${phase.duration_weeks || 4} weeks</div>
+                    ${phase.skills ? `<div class="text-xs text-gray-500 mt-1">${phase.skills.slice(0, 2).join(', ')}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Get estimated weeks based on experience and commitment
+        function getEstimatedWeeks() {
+            const baseWeeks = {
+                'junior': 20,
+                'mid': 16, 
+                'senior': 12
+            };
+            
+            const timeMultiplier = {
+                'part-time': 1.5,
+                'full-time': 1
+            };
+            
+            const base = baseWeeks[currentPath.experience_level] || 16;
+            const multiplier = timeMultiplier[currentPath.commitment_level] || 1;
+            
+            return Math.round(base * multiplier);
+        }
+
+        // Generate simple 3-phase learning path
+        function generateSimpleLearningPath() {
+            const careerPath = currentPath.career_path || 'Software Engineer';
+            const pathContainer = document.getElementById('path-phases');
+            const pathTitle = document.getElementById('path-title');
+            
+            console.log('🎯 Generating learning path for:', careerPath);
+            
+            const learningPaths = {
+                'Software Engineer': {
+                    title: '� Software Engineering Journey',
+                    phases: [
+                        { emoji: '🔧', name: 'Foundations', weeks: 4, color: 'primary' },
+                        { emoji: '🌐', name: 'Frontend', weeks: 6, color: 'galaxy-blue' },
+                        { emoji: '⚙️', name: 'Backend', weeks: 6, color: 'galaxy-cyan' }
+                    ]
+                },
+                'Data Scientist': {
+                    title: '📊 Data Science Journey',
+                    phases: [
+                        { emoji: '📈', name: 'Math & Stats', weeks: 5, color: 'primary' },
+                        { emoji: '🐍', name: 'Python & ML', weeks: 6, color: 'galaxy-blue' },
+                        { emoji: '🤖', name: 'AI & Projects', weeks: 5, color: 'galaxy-cyan' }
+                    ]
+                },
+                'Product Manager': {
+                    title: '� Product Management Journey',
+                    phases: [
+                        { emoji: '📊', name: 'Analytics & Research', weeks: 4, color: 'primary' },
+                        { emoji: '🎯', name: 'Strategy & Planning', weeks: 6, color: 'galaxy-blue' },
+                        { emoji: '👥', name: 'Leadership & Execution', weeks: 6, color: 'galaxy-cyan' }
+                    ]
+                },
+                'DevOps Engineer': {
+                    title: '🔧 DevOps Engineering Journey',
+                    phases: [
+                        { emoji: '☁️', name: 'Cloud Platforms', weeks: 5, color: 'primary' },
+                        { emoji: '🐳', name: 'Containers & K8s', weeks: 5, color: 'galaxy-blue' },
+                        { emoji: '🚀', name: 'CI/CD & Automation', weeks: 6, color: 'galaxy-cyan' }
+                    ]
+                },
+                'UX Designer': {
+                    title: '🎨 UX Design Journey',
+                    phases: [
+                        { emoji: '🔍', name: 'User Research', weeks: 4, color: 'primary' },
+                        { emoji: '✏️', name: 'Design & Prototyping', weeks: 6, color: 'galaxy-blue' },
+                        { emoji: '📱', name: 'Design Systems', weeks: 6, color: 'galaxy-cyan' }
+                    ]
+                },
+                'Cybersecurity Analyst': {
+                    title: '🔒 Cybersecurity Journey',
+                    phases: [
+                        { emoji: '🛡️', name: 'Security Foundations', weeks: 5, color: 'primary' },
+                        { emoji: '🔍', name: 'Threat Analysis', weeks: 6, color: 'galaxy-blue' },
+                        { emoji: '⚡', name: 'Incident Response', weeks: 5, color: 'galaxy-cyan' }
+                    ]
+                }
+            };
+
+            const userPath = learningPaths[careerPath] || learningPaths['Software Engineer'];
+            console.log('📋 Using learning path:', userPath);
+            
+            pathTitle.textContent = userPath.title;
+            document.getElementById('personalized-title').textContent = userPath.title;
+            
+            pathContainer.innerHTML = userPath.phases.map((phase, index) => `
+                <div class="glass-card p-4 rounded-lg text-center">
+                    <div class="text-3xl mb-2">${phase.emoji}</div>
+                    <h3 class="text-lg font-bold text-${phase.color} mb-2">${phase.name}</h3>
+                    <div class="text-sm text-gray-400">${phase.weeks} weeks</div>
+                </div>
+            `).join('');
+            
+            console.log('✅ Generated learning path for:', careerPath);
+        }
+
+        // Get difficulty level based on experience
+        function getDifficultyLevel() {
+            const experienceLevel = currentPath.experience_level || 'junior';
+            const difficultyMap = {
+                'junior': 'Beginner',
+                'mid': 'Intermediate', 
+                'senior': 'Advanced'
+            };
+            return difficultyMap[experienceLevel] || 'Intermediate';
+        }
+
+        // Direct start learning function
+        function startLearning() {
+            localStorage.setItem('currentLearningPath', JSON.stringify(currentPath));
+            globalThis.location.href = 'learning.html';
+        }
+
+        // Start Learning button functionality
+        function setupInteractions() {
+            const startButton = document.getElementById('start-learning-btn');
+            if (startButton) {
+                startButton.addEventListener('click', startLearning);
+            }
+        }
+
+        // Go home
+        function goHome() {
+            globalThis.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

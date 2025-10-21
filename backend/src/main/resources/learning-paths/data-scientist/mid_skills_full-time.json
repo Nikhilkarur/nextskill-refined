@@ -1,0 +1,47 @@
+{
+  "role": "data-scientist",
+  "experience": "mid",
+  "priority": "skills",
+  "timeCommitment": "full-time",
+  "title": "Data Scientist Mid - Skills Focus",
+  "difficulty": "Intermediate",
+  "duration_weeks": 16,
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Statistics",
+    "Pandas",
+    "TensorFlow",
+    "SQL",
+    "Jupyter",
+    "Data Visualization"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Statistics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "Pandas",
+        "TensorFlow",
+        "SQL"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 5,
+      "skills": [
+        "Jupyter",
+        "Data Visualization"
+      ]
+    }
+  ]
+}

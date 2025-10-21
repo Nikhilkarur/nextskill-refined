@@ -1,0 +1,45 @@
+{
+  "role": "ux-designer",
+  "experience": "junior",
+  "priority": "skills",
+  "timeCommitment": "full-time",
+  "title": "Ux Designer Junior - Skills Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 18,
+  "skills": [
+    "User Research",
+    "Figma",
+    "Prototyping",
+    "Design Systems",
+    "User Testing",
+    "Wireframing",
+    "Information Architecture"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "User Research",
+        "Figma",
+        "Prototyping"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "Design Systems",
+        "User Testing",
+        "Wireframing"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 6,
+      "skills": [
+        "Information Architecture"
+      ]
+    }
+  ]
+}

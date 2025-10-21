@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextSkill - Your Career Roadmap</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@400;500;700" />
+    <link rel="stylesheet" href="./assets/css/global.css" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .fade-in-section { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+            .fade-in-section.is-visible { opacity: 1; transform: translateY(0); }
+            .hero-glow { text-shadow: 0 0 20px rgba(45, 212, 191, 0.3); }
+            .floating-element { animation: float 6s ease-in-out infinite; }
+            @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+            .pulse-glow { animation: pulseGlow 2s ease-in-out infinite alternate; }
+            @keyframes pulseGlow { 0% { box-shadow: 0 0 20px rgba(45, 212, 191, 0.3); } 100% { box-shadow: 0 0 40px rgba(45, 212, 191, 0.6); } }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00FF88",
+                        "background-light": "#0A0A0F",
+                        "text-light": "#E2E8F0",
+                        "text-dark": "#F8FAFC",
+                        "accent": "#1E3A8A",
+                        "neon-green": "#00FF88",
+                        "neon-cyan": "#00FFFF",
+                        "space-blue": "#1E3A8A",
+                        "cosmic-purple": "#6366F1",
+                        "star-white": "#F8FAFC",
+                        "nebula-dark": "#1E1B4B"
+                    },
+                    fontFamily: { "display": ["Space Grotesk", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-light font-display text-text-light relative overflow-x-hidden">
+    <div id="canvas-container" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+
+    <div class="flex flex-col min-h-screen relative z-10">
+        <header class="sticky top-0 z-50 bg-background-light/90 backdrop-blur-md border-b border-neon-green/20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <div class="flex items-center gap-4">
+                        <a class="flex items-center gap-2 text-text-dark" href="index.html"><svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" opacity="0.2"></path><path d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor"></path><path d="M9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487Z" fill="currentColor" opacity="0.4"></path><path d="M27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263Z" fill="currentColor" opacity="0.4"></path><path d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819Z" fill="currentColor"></path></svg><h2 class="text-xl font-bold">NextSkill</h2></a>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <a href="about.html" class="text-sm font-medium text-text-light hover:text-primary transition-colors">About Us</a>
+                        <a href="auth.html" class="px-5 py-2.5 text-sm font-bold text-text-dark rounded-lg hover:bg-gray-100 transition-colors">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <section class="py-24 md:py-32 lg:py-40 bg-transparent">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold text-text-dark tracking-tighter hero-glow floating-element">Your Skills, Upgraded.</h1>
+                        <p class="mt-6 text-lg text-text-light max-w-2xl mx-auto fade-in-section" style="animation-delay: 0.2s;">NextSkill analyzes your resume against your career goals and builds a personalized, step-by-step learning plan to bridge the gap.</p>
+                        <p class="mt-4 text-sm text-primary/80 max-w-2xl mx-auto italic fade-in-section" style="animation-delay: 0.4s;">Connecting the dots to your next career move.</p>
+                        <div class="mt-10 fade-in-section" style="animation-delay: 0.6s;">
+                            <a href="https://www.instagram.com/next__skill?igsh=OTN0MjJnbnhjbXFz" target="_blank" class="inline-block px-10 py-4 text-lg font-bold text-white bg-primary rounded-lg hover:bg-primary/90 shadow-lg shadow-primary/20 pulse-glow btn-enhanced">Join the Community</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <section class="py-16 md:py-24 bg-transparent border-y border-neon-green/10">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-3xl mx-auto text-center mb-12 md:mb-16 fade-in-section">
+                        <h2 class="text-3xl sm:text-4xl font-bold text-text-dark tracking-tight">A Smarter Way to Upskill</h2>
+                        <p class="mt-4 text-text-light">Three simple steps to your personalized career plan.</p>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                        <div class="fade-in-section card-enhanced p-6 rounded-xl bg-nebula-dark/30 backdrop-blur-sm border border-neon-green/20 hover:border-neon-green/40 transition-all duration-300">
+                            <div class="flex justify-center items-center mb-4">
+                                <div class="bg-accent text-primary w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold floating">1</div>
+                            </div>
+                            <h3 class="text-xl font-bold text-text-dark mb-2">Answer Questions</h3>
+                            <p class="text-sm text-text-light">Tell us about your career goals, experience level, and learning preferences.</p>
+                        </div>
+                        <div class="fade-in-section stagger-2 card-enhanced p-6 rounded-xl bg-nebula-dark/30 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40 transition-all duration-300">
+                             <div class="flex justify-center items-center mb-4">
+                                <div class="bg-accent text-primary w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold floating" style="animation-delay: 1s;">2</div>
+                            </div>
+                            <h3 class="text-xl font-bold text-text-dark mb-2">Upload Resume</h3>
+                            <p class="text-sm text-text-light">Optionally upload your resume for more personalized recommendations.</p>
+                        </div>
+                        <div class="fade-in-section stagger-3 card-enhanced p-6 rounded-xl bg-nebula-dark/30 backdrop-blur-sm border border-cosmic-purple/20 hover:border-cosmic-purple/40 transition-all duration-300">
+                            <div class="flex justify-center items-center mb-4">
+                                <div class="bg-accent text-primary w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold floating" style="animation-delay: 2s;">3</div>
+                            </div>
+                            <h3 class="text-xl font-bold text-text-dark mb-2">Get Your Roadmap</h3>
+                            <p class="text-sm text-text-light">Receive a personalized, step-by-step learning plan tailored to your goals.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-20 md:py-32">
+                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-3xl mx-auto text-center fade-in-section">
+                        <h2 class="text-3xl sm:text-4xl font-bold text-text-dark tracking-tight">Ready to Accelerate Your Career?</h2>
+                        <p class="mt-4 text-text-light">Stop guessing what to learn next. Get a clear path forward today.</p>
+                        <div class="mt-8">
+                            <a href="auth.html?form=signup" class="inline-block px-10 py-4 text-lg font-bold text-white bg-primary rounded-lg hover:bg-primary/90 shadow-lg shadow-primary/20 pulse-glow btn-enhanced">Create Your Account</a>
+                        </div>
+                    </div>
+                 </div>
+            </section>
+
+        </main>
+        
+        <footer class="bg-nebula-dark/20 backdrop-blur-sm border-t border-neon-green/20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+                    <div class="col-span-2 md:col-span-2">
+                        <a class="flex items-center gap-2 text-text-dark" href="#">
+                            <svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" opacity="0.2"></path><path d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor"></path><path d="M9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487Z" fill="currentColor" opacity="0.4"></path><path d="M27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263Z" fill="currentColor" opacity="0.4"></path><path d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819Z" fill="currentColor"></path></svg>
+                            <h2 class="text-xl font-bold">NextSkill</h2>
+                        </a>
+                        <p class="text-sm text-gray-500 mt-2">Personalized career roadmaps for tech professionals.</p>
+                    </div>
+                     <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Product</h3>
+                        <div class="mt-4 space-y-4">
+                            <a class="text-base text-text-light hover:text-primary" href="#">Features</a><br />
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Contact</h3>
+                         <div class="mt-4 space-y-4">
+                             <a class="text-base text-text-light hover:text-primary" href="mailto:karurnikhil2507@gmail.com">karurnikhil2507@gmail.com</a>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Team</h3>
+                        <div class="mt-4 space-y-4">
+                            <a class="text-base text-text-light hover:text-primary" href="https://github.com/Nikhilkarur" target="_blank">Nikhil Karur</a><br />
+                            <a class="text-base text-text-light hover:text-primary" href="https://github.com/VishaalPillay" target="_blank">Vishaal Pillay</a><br />
+                            <a class="text-base text-text-light hover:text-primary" href="https://github.com/asmitharoyal" target="_blank">Asmitha Royal</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 border-t border-gray-200 pt-8 flex items-center justify-center">
+                    <p class="text-sm text-gray-500">© 2024 NextSkill. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+             // Scroll Animation for sections
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        // --- Enhanced Three.js Background Animation Logic ---
+        let scene, camera, renderer, points, lines, nebula;
+        const container = document.getElementById('canvas-container');
+        let time = 0;
+
+        function createSphereTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(32, 32, 2, 32, 32, 32);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.1, 'rgba(45, 212, 191, 0.9)');
+            gradient.addColorStop(0.3, 'rgba(45, 212, 191, 0.6)');
+            gradient.addColorStop(1, 'rgba(45, 212, 191, 0)');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 64, 64);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function createNebulaTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 128;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(64, 64, 10, 64, 64, 64);
+            gradient.addColorStop(0, 'rgba(45, 212, 191, 0.3)');
+            gradient.addColorStop(0.5, 'rgba(45, 212, 191, 0.1)');
+            gradient.addColorStop(1, 'rgba(45, 212, 191, 0)');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // Enhanced particle system
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const colors = [];
+            const sizes = [];
+            const numPoints = 800;
+
+            for (let i = 0; i < numPoints; i++) {
+                const x = (Math.random() - 0.5) * 60;
+                const y = (Math.random() - 0.5) * 60;
+                const z = (Math.random() - 0.5) * 60;
+                vertices.push(x, y, z);
+
+                const color = new THREE.Color();
+                color.setHSL(0.5 + Math.random() * 0.1, 0.7, 0.5 + Math.random() * 0.3);
+                colors.push(color.r, color.g, color.b);
+                
+                sizes.push(Math.random() * 2 + 0.5);
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+            
+            const material = new THREE.PointsMaterial({
+                map: createSphereTexture(),
+                size: 0.3,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                transparent: true,
+                sizeAttenuation: true
+            });
+
+            points = new THREE.Points(geometry, material);
+            scene.add(points);
+
+            // Add connecting lines
+            const lineGeometry = new THREE.BufferGeometry();
+            const lineVertices = [];
+            const lineColors = [];
+            
+            for (let i = 0; i < numPoints; i += 20) {
+                const start = new THREE.Vector3(
+                    vertices[i * 3],
+                    vertices[i * 3 + 1],
+                    vertices[i * 3 + 2]
+                );
+                
+                for (let j = i + 20; j < Math.min(i + 100, numPoints); j += 20) {
+                    const end = new THREE.Vector3(
+                        vertices[j * 3],
+                        vertices[j * 3 + 1],
+                        vertices[j * 3 + 2]
+                    );
+                    
+                    if (start.distanceTo(end) < 15) {
+                        lineVertices.push(start.x, start.y, start.z);
+                        lineVertices.push(end.x, end.y, end.z);
+                        
+                        lineColors.push(0.18, 0.83, 0.75);
+                        lineColors.push(0.18, 0.83, 0.75);
+                    }
+                }
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(lineVertices, 3));
+            lineGeometry.setAttribute('color', new THREE.Float32BufferAttribute(lineColors, 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+            
+            lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lines);
+
+            // Add nebula effect
+            const nebulaGeometry = new THREE.PlaneGeometry(100, 100);
+            const nebulaMaterial = new THREE.MeshBasicMaterial({
+                map: createNebulaTexture(),
+                transparent: true,
+                opacity: 0.2,
+                blending: THREE.AdditiveBlending
+            });
+            
+            nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+            nebula.position.z = -30;
+            scene.add(nebula);
+
+            camera.position.z = 20;
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) / 800;
+            mouseY = (event.clientY - window.innerHeight / 2) / 800;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            let time = (performance.now() || 0) / 1000;
+
+            // Enhanced particle animation
+            const positions = points.geometry.attributes.position.array;
+            const colors = points.geometry.attributes.color.array;
+            
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i + 1] += Math.sin(time + positions[i] * 0.01) * 0.002;
+                positions[i] += Math.cos(time + positions[i + 2] * 0.01) * 0.001;
+                
+                // Pulsing colors
+                const colorIndex = i;
+                colors[colorIndex] = 0.18 + Math.sin(time * 2 + i * 0.1) * 0.1;
+                colors[colorIndex + 1] = 0.83 + Math.sin(time * 3 + i * 0.1) * 0.1;
+                colors[colorIndex + 2] = 0.75 + Math.sin(time * 4 + i * 0.1) * 0.1;
+            }
+            
+            points.geometry.attributes.position.needsUpdate = true;
+            points.geometry.attributes.color.needsUpdate = true;
+
+            // Smooth rotation with mouse interaction
+            points.rotation.x += 0.0005 + mouseY * 0.02;
+            points.rotation.y += 0.0008 + mouseX * 0.02;
+            
+            lines.rotation.x += 0.0003 + mouseY * 0.015;
+            lines.rotation.y += 0.0006 + mouseX * 0.015;
+            
+            nebula.rotation.z += 0.0002;
+
+            renderer.render(scene, camera);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

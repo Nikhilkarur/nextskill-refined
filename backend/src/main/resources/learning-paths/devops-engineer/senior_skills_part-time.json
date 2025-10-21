@@ -1,0 +1,47 @@
+{
+  "role": "devops-engineer",
+  "experience": "senior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "title": "Devops Engineer Senior - Skills Focus",
+  "difficulty": "Advanced",
+  "duration_weeks": 21,
+  "skills": [
+    "Kubernetes",
+    "Docker",
+    "AWS",
+    "Terraform",
+    "CI/CD",
+    "Linux",
+    "Monitoring",
+    "Security"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 7,
+      "skills": [
+        "Kubernetes",
+        "Docker",
+        "AWS"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 7,
+      "skills": [
+        "Terraform",
+        "CI/CD",
+        "Linux"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 7,
+      "skills": [
+        "Monitoring",
+        "Security"
+      ]
+    }
+  ]
+}

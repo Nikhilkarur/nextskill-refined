@@ -1,0 +1,45 @@
+{
+  "role": "product-manager",
+  "experience": "junior",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "title": "Product Manager Junior - Projects Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 18,
+  "skills": [
+    "Product Strategy",
+    "User Research",
+    "Analytics",
+    "Roadmapping",
+    "Stakeholder Management",
+    "Agile",
+    "Go-to-Market"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "Product Strategy",
+        "User Research",
+        "Analytics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "Roadmapping",
+        "Stakeholder Management",
+        "Agile"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 6,
+      "skills": [
+        "Go-to-Market"
+      ]
+    }
+  ]
+}

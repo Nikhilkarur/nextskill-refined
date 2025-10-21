@@ -1,0 +1,45 @@
+{
+  "role": "product-manager",
+  "experience": "mid",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "title": "Product Manager Mid - Skills Focus",
+  "difficulty": "Intermediate",
+  "duration_weeks": 24,
+  "skills": [
+    "Product Strategy",
+    "User Research",
+    "Analytics",
+    "Roadmapping",
+    "Stakeholder Management",
+    "Agile",
+    "Go-to-Market"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 8,
+      "skills": [
+        "Product Strategy",
+        "User Research",
+        "Analytics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 8,
+      "skills": [
+        "Roadmapping",
+        "Stakeholder Management",
+        "Agile"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 8,
+      "skills": [
+        "Go-to-Market"
+      ]
+    }
+  ]
+}

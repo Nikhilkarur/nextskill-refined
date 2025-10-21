@@ -1,0 +1,47 @@
+{
+  "role": "software-engineer",
+  "experience": "junior",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "title": "Software Engineer Junior - Projects Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 18,
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "TypeScript",
+    "AWS",
+    "Docker",
+    "Git",
+    "Testing"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "JavaScript",
+        "React",
+        "Node.js"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "TypeScript",
+        "AWS",
+        "Docker"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 6,
+      "skills": [
+        "Git",
+        "Testing"
+      ]
+    }
+  ]
+}

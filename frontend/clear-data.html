@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Data - NextSkill</title>
+    <style>
+        body { 
+            background: #1a1a1a; 
+            color: white; 
+            font-family: sans-serif; 
+            padding: 40px; 
+            text-align: center;
+        }
+        .btn { 
+            background: #00ff88; 
+            color: black; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin: 10px;
+        }
+        .btn:hover { background: #00cc6a; }
+        .success { color: #00ff88; font-size: 18px; margin: 20px 0; }
+        .info { color: #44aaff; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🗑️ Clear Browser Data</h1>
+    <p class="info">This will clear all stored tokens and data so you can test fresh authentication</p>
+    
+    <button class="btn" onclick="clearAll()">Clear All Data</button>
+    
+    <div id="status"></div>
+    
+    <div class="info" style="margin-top: 40px;">
+        <h3>After clearing data, test these links:</h3>
+        <a href="http://127.0.0.1:5500/frontend/index.html" style="color: #00ff88;">🏠 Landing Page</a><br><br>
+        <a href="http://127.0.0.1:5500/frontend/auth.html" style="color: #00ff88;">🔐 Auth Page (Clean)</a><br><br>
+        <a href="http://127.0.0.1:5500/frontend/questions.html" style="color: #00ff88;">📝 Questions Page</a>
+    </div>
+
+    <script>
+        function clearAll() {
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Clear any stored tokens
+                localStorage.removeItem('ns_token');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('roadmapData');
+                localStorage.removeItem('questionnaireData');
+                
+                document.getElementById('status').innerHTML = '<div class="success">✅ All data cleared successfully!</div><div class="info">You can now test fresh authentication without auto-redirects</div>';
+                
+                setTimeout(() => {
+                    window.location.href = 'http://127.0.0.1:5500/frontend/index.html';
+                }, 2000);
+                
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<div style="color: #ff4444;">❌ Error: ' + error.message + '</div>';
+            }
+        }
+        
+        // Auto-clear on page load if requested
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('auto') === 'true') {
+            clearAll();
+        }
+    </script>
+</body>
+</html>

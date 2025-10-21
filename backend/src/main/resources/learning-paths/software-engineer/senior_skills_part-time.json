@@ -1,0 +1,47 @@
+{
+  "role": "software-engineer",
+  "experience": "senior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "title": "Software Engineer Senior - Skills Focus",
+  "difficulty": "Advanced",
+  "duration_weeks": 21,
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "TypeScript",
+    "AWS",
+    "Docker",
+    "Git",
+    "Testing"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 7,
+      "skills": [
+        "JavaScript",
+        "React",
+        "Node.js"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 7,
+      "skills": [
+        "TypeScript",
+        "AWS",
+        "Docker"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 7,
+      "skills": [
+        "Git",
+        "Testing"
+      ]
+    }
+  ]
+}

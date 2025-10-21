@@ -1,0 +1,47 @@
+{
+  "role": "data-engineer",
+  "experience": "senior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "title": "Data Engineer Senior - Skills Focus",
+  "difficulty": "Advanced",
+  "duration_weeks": 21,
+  "skills": [
+    "Python",
+    "SQL",
+    "Apache Spark",
+    "ETL",
+    "Data Warehousing",
+    "Kafka",
+    "Airflow",
+    "AWS"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 7,
+      "skills": [
+        "Python",
+        "SQL",
+        "Apache Spark"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 7,
+      "skills": [
+        "ETL",
+        "Data Warehousing",
+        "Kafka"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 7,
+      "skills": [
+        "Airflow",
+        "AWS"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "role": "data-scientist",
+  "experience": "junior",
+  "priority": "projects",
+  "timeCommitment": "full-time",
+  "title": "Data Scientist Junior - Projects Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 18,
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Statistics",
+    "Pandas",
+    "TensorFlow",
+    "SQL",
+    "Jupyter",
+    "Data Visualization"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Statistics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "Pandas",
+        "TensorFlow",
+        "SQL"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 6,
+      "skills": [
+        "Jupyter",
+        "Data Visualization"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "security.jwt.secret",
+      "type": "java.lang.String",
+      "description": "HS256 secret key for JWT signing/verification (min 32 chars).",
+      "sourceType": "com.nextskill.service.JwtService"
+    },
+    {
+      "name": "security.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed CORS origins.",
+      "sourceType": "com.nextskill.config.WebConfig"
+    }
+  ]
+}

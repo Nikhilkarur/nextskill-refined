@@ -1,0 +1,47 @@
+{
+  "role": "data-scientist",
+  "experience": "senior",
+  "priority": "skills",
+  "timeCommitment": "part-time",
+  "title": "Data Scientist Senior - Skills Focus",
+  "difficulty": "Advanced",
+  "duration_weeks": 21,
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Statistics",
+    "Pandas",
+    "TensorFlow",
+    "SQL",
+    "Jupyter",
+    "Data Visualization"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 7,
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Statistics"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 7,
+      "skills": [
+        "Pandas",
+        "TensorFlow",
+        "SQL"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 7,
+      "skills": [
+        "Jupyter",
+        "Data Visualization"
+      ]
+    }
+  ]
+}

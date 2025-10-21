@@ -1,0 +1,64 @@
+================================================================================
+NEXTSKILL - QUICK TEST COMMANDS
+================================================================================
+
+STEP 1: BUILD BACKEND
+----------------------
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd clean package -DskipTests
+
+
+STEP 2: START BACKEND (New Terminal - Keep Open)
+--------------------------------------------------
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project\backend
+.\mvnw.cmd spring-boot:run
+
+
+STEP 3: START FRONTEND (New Terminal - Keep Open)
+---------------------------------------------------
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run serve:frontend
+
+
+STEP 4: VERIFY SERVERS (New Terminal)
+---------------------------------------
+powershell -NoProfile -Command "iwr http://127.0.0.1:8080/actuator/health -UseBasicParsing | Select-Object -ExpandProperty Content"
+powershell -NoProfile -Command "iwr http://127.0.0.1:5500/frontend/index.html -UseBasicParsing | Select-Object StatusCode"
+
+
+STEP 5: RUN SMOKE TEST (Same Terminal as Step 4)
+--------------------------------------------------
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run smoke:auth
+
+
+STEP 6: RUN E2E TESTS (Same Terminal as Step 4)
+-------------------------------------------------
+cd c:\Users\nkk77\Desktop\gpt5\nextskill-project
+npm run test:e2e
+
+
+TROUBLESHOOTING
+================
+
+Port 8080 already in use:
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"
+
+Port 5500 already in use:
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 5500 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"
+
+Kill all Java processes:
+powershell -NoProfile -Command "Get-Process -Name java -ErrorAction SilentlyContinue | Stop-Process -Force"
+
+
+EXPECTED RESULTS
+=================
+
+Smoke Test Output:
+AUTH_SMOKE_OK
+
+E2E Test Output:
+3 passed
+
+
+================================================================================

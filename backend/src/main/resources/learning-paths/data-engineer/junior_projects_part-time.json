@@ -1,0 +1,47 @@
+{
+  "role": "data-engineer",
+  "experience": "junior",
+  "priority": "projects",
+  "timeCommitment": "part-time",
+  "title": "Data Engineer Junior - Projects Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 27,
+  "skills": [
+    "Python",
+    "SQL",
+    "Apache Spark",
+    "ETL",
+    "Data Warehousing",
+    "Kafka",
+    "Airflow",
+    "AWS"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 9,
+      "skills": [
+        "Python",
+        "SQL",
+        "Apache Spark"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 9,
+      "skills": [
+        "ETL",
+        "Data Warehousing",
+        "Kafka"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 9,
+      "skills": [
+        "Airflow",
+        "AWS"
+      ]
+    }
+  ]
+}

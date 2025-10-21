@@ -1,0 +1,47 @@
+{
+  "role": "data-engineer",
+  "experience": "junior",
+  "priority": "skills",
+  "timeCommitment": "full-time",
+  "title": "Data Engineer Junior - Skills Focus",
+  "difficulty": "Beginner",
+  "duration_weeks": 18,
+  "skills": [
+    "Python",
+    "SQL",
+    "Apache Spark",
+    "ETL",
+    "Data Warehousing",
+    "Kafka",
+    "Airflow",
+    "AWS"
+  ],
+  "phases": [
+    {
+      "name": "Foundation",
+      "duration_weeks": 6,
+      "skills": [
+        "Python",
+        "SQL",
+        "Apache Spark"
+      ]
+    },
+    {
+      "name": "Intermediate",
+      "duration_weeks": 6,
+      "skills": [
+        "ETL",
+        "Data Warehousing",
+        "Kafka"
+      ]
+    },
+    {
+      "name": "Advanced",
+      "duration_weeks": 6,
+      "skills": [
+        "Airflow",
+        "AWS"
+      ]
+    }
+  ]
+}
