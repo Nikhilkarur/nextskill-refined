@@ -2,7 +2,7 @@ services:
   - type: web
     name: nextskill-backend
     runtime: java
-    buildCommand: ./mvnw clean package -DskipTests
+    buildCommand: sh mvnw clean package -DskipTests
     startCommand: java -jar target/backend-0.0.1-SNAPSHOT.jar
     plan: free  # FREE TIER - app sleeps after 15min inactivity
     rootDir: backend
