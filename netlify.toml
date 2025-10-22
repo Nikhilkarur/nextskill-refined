@@ -6,7 +6,7 @@
 [[redirects]]
   # Proxy all /api/* requests to the backend
   from = "/api/*"
-  to = "https://nextskill2.onrender.com/api/:splat"
+  to = "https://nextskill-refined3.onrender.com/api/:splat"
   status = 200
   force = true
 

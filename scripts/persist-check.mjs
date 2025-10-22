@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 
-const BASE = 'http://127.0.0.1:8080';
+// BASE can be overridden via environment variable: BASE=https://your-service.onrender.com
+const BASE = process.env.BASE || 'http://127.0.0.1:8080';
 const CREDS_PATH = new URL('../.persist-creds.json', import.meta.url);
 
 async function waitHealth(timeoutMs = 15000) {

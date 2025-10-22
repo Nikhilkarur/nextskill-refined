@@ -1,5 +1,6 @@
 // Basic backend performance timings for key endpoints
-const BASE = 'http://localhost:8080';
+// BASE can be overridden via environment variable: BASE=https://your-service.onrender.com
+const BASE = process.env.BASE || 'http://localhost:8080';
 
 function uniqueEmail() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}@test.local`;
