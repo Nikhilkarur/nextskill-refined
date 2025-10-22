@@ -1,0 +1,16 @@
+
+#!/usr/bin/env bash
+# Minimal Maven wrapper runner — invokes the bundled wrapper jar.
+# This allows CI systems without executable bits to run the wrapper via `sh mvnw`.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
+WRAPPER_JAR="$ROOT_DIR/.mvn/wrapper/maven-wrapper.jar"
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+  echo "ERROR: Maven wrapper JAR not found at $WRAPPER_JAR" >&2
+  exit 1
+fi
+
+exec java -jar "$WRAPPER_JAR" "$@"
+
