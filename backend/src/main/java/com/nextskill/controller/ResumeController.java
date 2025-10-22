@@ -41,11 +41,10 @@ public class ResumeController {
             return ResponseEntity.badRequest().body("file too large");
         }
         String email = auth.getName();
-        User domainUser = userRepository.findByEmail(email).orElseGet(() -> {
-            User u = new User();
-            u.setEmail(email);
-            return u;
-        });
+        User domainUser = userRepository.findByEmail(email).orElse(null);
+        if (domainUser == null) {
+            return ResponseEntity.status(401).body("user not found; please sign in again");
+        }
 
         String text = resumeService.extractText(file);
         resumeService.saveUpload(domainUser, file, text);

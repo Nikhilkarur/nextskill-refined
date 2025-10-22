@@ -7,7 +7,14 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "smoke:auth": "node ./scripts/smoke-auth.mjs",
-    "smoke:resume": "node ./scripts/smoke-resume.mjs"
+    "smoke:resume": "node ./scripts/smoke-resume.mjs",
+    "admin:count": "node ./scripts/admin-count.mjs",
+  "check:cors:win": "scripts\\cors-check.bat",
+    "start:backend:win": "start-backend.bat",
+    "start:frontend:win": "start-frontend.bat",
+    "start:all:win": "start-all.bat",
+    "db:reset:win": "reset-db.bat",
+    "check:persist:win": "scripts\\persist-e2e.bat"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.2",

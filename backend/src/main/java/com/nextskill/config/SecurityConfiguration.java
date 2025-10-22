@@ -32,13 +32,18 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
             .headers(h -> h.frameOptions(f -> f.disable())) // for H2 console
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/actuator/health", "/h2-console/**").permitAll()
+                // Public endpoints
+                .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
+                .requestMatchers("/actuator/health", "/h2-console/**").permitAll()
+                // Allow preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/roadmaps/**", "/api/resumes/**").authenticated()
+                // Protected API
+                .requestMatchers("/api/roadmaps/**", "/api/resumes/**", "/api/questions/**", "/api/auth/validate", "/api/admin/**").authenticated()
                 .anyRequest().permitAll()
             )
             .authenticationProvider(authenticationProvider())

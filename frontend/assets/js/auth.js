@@ -128,10 +128,11 @@
 
     } catch (error) {
       console.error('[Auth] Error:', error);
-      
-      let errorMessage = 'Authentication failed. Please try again.';
-  const msg = String(error?.message ?? '').toLowerCase();
-      if (msg.includes('email already exists') || msg.includes('email already registered')) {
+
+      const raw = String(error?.message ?? '').trim();
+      const msg = raw.toLowerCase();
+      let errorMessage = raw || 'Authentication failed. Please try again.';
+      if (msg.includes('email already exists') || msg.includes('email already registered') || msg.includes('conflict')) {
         errorMessage = 'Email already exists. Please sign in instead.';
         // Switch to sign-in for convenience and prefill the email the user entered
         try {
@@ -144,8 +145,8 @@
       } else if (msg.includes('invalid credentials') || msg.includes('bad credentials') || msg.includes('401') || msg.includes('unauthorized')) {
         errorMessage = 'Invalid email or password.';
       } else if (msg.includes('failed to fetch') || msg.includes('network') || msg.includes('not loaded')) {
-        errorMessage = error.message;
-      }
+        errorMessage = raw || 'Network error. Please retry.';
+      } 
       
       if (errorBox) {
         errorBox.textContent = errorMessage;

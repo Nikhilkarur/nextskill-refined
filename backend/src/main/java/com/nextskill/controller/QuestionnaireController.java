@@ -27,13 +27,13 @@ public class QuestionnaireController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/submit")
     public ResponseEntity<Long> submit(@RequestBody QuestionnaireRequest req, Authentication auth) {
-        User u = userRepository.findByEmail(auth.getName()).orElseGet(() -> {
-            User nu = new User();
-            nu.setEmail(auth.getName());
-            return nu;
-        });
+        User u = userRepository.findByEmail(auth.getName()).orElse(null);
+        if (u == null) {
+            // Token belongs to a user that doesn't exist anymore (e.g., DB reset). Ask client to re-auth.
+            return ResponseEntity.status(401).build();
+        }
 
-        QuestionnaireResponse qr = new QuestionnaireResponse();
+    QuestionnaireResponse qr = new QuestionnaireResponse();
         qr.setUser(u);
         qr.setDesiredRole(req.getRole());
         qr.setExperience(req.getExperience());

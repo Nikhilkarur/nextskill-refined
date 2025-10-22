@@ -3,6 +3,7 @@ node_modules/
 
 # Build outputs
 backend/target/
+backend/data/
 target/
 dist/
 build/

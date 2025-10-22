@@ -16,6 +16,17 @@
     const ct = res.headers.get('content-type') || '';
     const payload = ct.includes('application/json') ? (await res.json().catch(()=>null)) : (await res.text());
     if (!res.ok) {
+      // Global 401 handler: clear token and redirect to auth with return hint
+      if (res.status === 401) {
+        try {
+          localStorage.removeItem('ns_token');
+          const here = (location && location.pathname) ? location.pathname.split('/').pop() : 'index.html';
+          // Avoid redirect loops from auth page
+          if (!/auth\.html$/i.test(here)) {
+            location.assign(`auth.html?from=${encodeURIComponent(here)}`);
+          }
+        } catch {}
+      }
       const msg = payload && typeof payload === 'object' && payload.message ? payload.message : res.status + ' ' + res.statusText;
       throw new Error(msg);
     }
