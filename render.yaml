@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: nextskill-backend
+    runtime: java
+    buildCommand: cd backend && ./mvnw clean package -DskipTests
+    startCommand: cd backend && java -jar target/backend-0.0.1-SNAPSHOT.jar
+    plan: free  # FREE TIER - app sleeps after 15min inactivity
+    rootDir: backend
+    envVars:
+      # Neon PostgreSQL production (persistent data)
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://ep-shiny-mouse-ad37vw0x-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - key: SPRING_DATASOURCE_USERNAME
+        value: neondb_owner
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: npg_l1ZJHOiPC4Go
+      
+      - key: JWT_SECRET
+        generateValue: true  # Auto-generate secure random value
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://quiet-gelato-770810.netlify.app,https://*.netlify.app,https://*.vercel.app"
+
+databases:
+  # Optional: Use Render Postgres instead of external Neon
+  # - name: nextskill-db
+  #   databaseName: nextskill
+  #   user: nextskill_user

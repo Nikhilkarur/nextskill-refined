@@ -1,0 +1,13 @@
+[phases.build]
+cmds = ["cd backend && ./mvnw clean package -DskipTests"]
+
+[phases.start]
+cmd = "java -jar backend/target/backend-0.0.1-SNAPSHOT.jar"
+
+[variables]
+SPRING_PROFILES_ACTIVE = "prod"
+SPRING_DATASOURCE_URL = "jdbc:postgresql://ep-shiny-mouse-ad37vw0x-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require"
+SPRING_DATASOURCE_USERNAME = "neondb_owner"
+SPRING_DATASOURCE_PASSWORD = "npg_l1ZJHOiPC4Go"
+CORS_ALLOWED_ORIGINS = "https://quiet-gelato-770810.netlify.app,https://*.netlify.app"
+JWT_SECRET = "your-super-secret-jwt-key-change-this-in-production-make-it-very-long-and-random"

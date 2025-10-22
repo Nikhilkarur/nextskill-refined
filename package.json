@@ -10,6 +10,7 @@
     "smoke:resume": "node ./scripts/smoke-resume.mjs",
     "admin:count": "node ./scripts/admin-count.mjs",
   "check:cors:win": "scripts\\cors-check.bat",
+  "restart:test:win": "scripts\\restart-and-test.bat",
     "start:backend:win": "start-backend.bat",
     "start:frontend:win": "start-frontend.bat",
     "start:all:win": "start-all.bat",

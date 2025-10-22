@@ -1,0 +1,23 @@
+[build]
+  # No build step needed for static frontend
+  command = ""
+  publish = "frontend"
+
+[[redirects]]
+  # Proxy all /api/* requests to the backend
+  from = "/api/*"
+  to = "https://nextskill-backend.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[build.environment]
+  # Optional: set Node version if needed for any build tools
+  NODE_VERSION = "18"
+
+# Enable branch deploys for preview URLs
+[context.branch-deploy]
+  command = ""
+
+# Production context
+[context.production]
+  command = ""

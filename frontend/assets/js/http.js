@@ -1,6 +1,9 @@
 // Minimal HTTP helper aligned with backend. No external deps.
 (() => {
-  const API_BASE = 'http://127.0.0.1:8080';
+  // Allow overriding API base via global config for deployments (Netlify/Vercel)
+  const API_BASE = (globalThis.NS_CONFIG && globalThis.NS_CONFIG.API_BASE)
+    ? globalThis.NS_CONFIG.API_BASE
+    : 'http://127.0.0.1:8080';
 
   function token() { return localStorage.getItem('ns_token'); }
 

@@ -19,7 +19,8 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 String[] origins = allowedOriginsCsv.split(",");
                 registry.addMapping("/api/**")
-                        .allowedOrigins(origins)
+                        // Use origin patterns to support wildcards for preview domains (e.g., *.netlify.app)
+                        .allowedOriginPatterns(origins)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
