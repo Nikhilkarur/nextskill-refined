@@ -1,9 +1,10 @@
 // Minimal HTTP helper aligned with backend. No external deps.
 (() => {
   // Allow overriding API base via global config for deployments (Netlify/Vercel)
-  const API_BASE = (globalThis.NS_CONFIG && globalThis.NS_CONFIG.API_BASE)
-    ? globalThis.NS_CONFIG.API_BASE
-    : 'http://127.0.0.1:8080';
+  // IMPORTANT: Respect empty string ('') as a valid value for proxy mode
+  // so we don't fall back to localhost in production when using Netlify rewrites.
+  const hasConfig = !!(globalThis.NS_CONFIG && Object.prototype.hasOwnProperty.call(globalThis.NS_CONFIG, 'API_BASE'));
+  const API_BASE = hasConfig ? globalThis.NS_CONFIG.API_BASE : 'http://127.0.0.1:8080';
 
   function token() { return localStorage.getItem('ns_token'); }
 
