@@ -1,5 +1,6 @@
 // Resume upload smoke test: signup -> upload .txt resume -> expect text extracted and saved
-const BASE = 'http://localhost:8080';
+// BASE can be overridden via environment variable: BASE=https://your-service.onrender.com
+const BASE = process.env.BASE || 'http://localhost:8080';
 
 function uniqueEmail() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}@test.local`;
