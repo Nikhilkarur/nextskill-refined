@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebSecurity
@@ -36,6 +37,13 @@ public class SecurityConfiguration {
             .csrf(csrf -> csrf.disable())
             .headers(h -> h.frameOptions(f -> f.disable())) // for H2 console
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(eh -> eh.authenticationEntryPoint((request, response, authException) -> {
+                if (response.isCommitted()) return;
+                response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                String body = "{\"error\":\"unauthorized\",\"message\":\"Authentication required\"}";
+                response.getOutputStream().write(body.getBytes(StandardCharsets.UTF_8));
+            }))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
