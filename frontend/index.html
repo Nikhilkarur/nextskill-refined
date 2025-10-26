@@ -67,6 +67,27 @@
             </div>
         </header>
 
+        <!-- Background Music Player -->
+        <div id="music-player" class="fixed top-24 right-4 z-40">
+            <button id="music-toggle" class="bg-primary/20 backdrop-blur-md border border-primary/30 text-primary p-3 rounded-full hover:bg-primary/30 transition-all duration-300 group shadow-lg">
+                <svg id="music-icon" class="w-6 h-6 transition-transform duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+                <span id="music-tooltip" class="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-black/80 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Click to toggle music
+                </span>
+            </button>
+            
+            <!-- Audio Element -->
+            <audio id="background-music" loop preload="auto">
+                <!-- Replace with your actual FL Studio track -->
+                <source src="./assets/music/background-track.mp3" type="audio/mpeg">
+                <!-- Fallback for external hosting -->
+                <!-- <source src="https://soundcloud.com/your-track-url" type="audio/mpeg"> -->
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
         <main class="flex-grow">
             <section class="py-24 md:py-32 lg:py-40 bg-transparent">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -366,6 +387,133 @@
 
         init();
         animate();
+    </script>
+
+    <!-- Background Music Control Script -->
+    <script>
+        class BackgroundMusicPlayer {
+            constructor() {
+                this.audio = document.getElementById('background-music');
+                this.toggleBtn = document.getElementById('music-toggle');
+                this.musicIcon = document.getElementById('music-icon');
+                this.tooltip = document.getElementById('music-tooltip');
+                
+                this.isPlaying = false;
+                this.hasUserInteracted = false;
+                
+                this.init();
+            }
+            
+            init() {
+                // Set initial volume
+                this.audio.volume = 0.3; // 30% volume for background music
+                
+                // Add event listeners
+                this.toggleBtn.addEventListener('click', () => this.toggleMusic());
+                
+                // Auto-play on first user interaction (required by browsers)
+                document.addEventListener('click', () => this.handleFirstInteraction(), { once: true });
+                document.addEventListener('keydown', () => this.handleFirstInteraction(), { once: true });
+                document.addEventListener('touchstart', () => this.handleFirstInteraction(), { once: true });
+                
+                // Audio event listeners
+                this.audio.addEventListener('loadstart', () => console.log('🎵 Loading background music...'));
+                this.audio.addEventListener('canplay', () => console.log('🎵 Background music ready'));
+                this.audio.addEventListener('error', () => this.handleAudioError());
+                
+                // Update UI initially
+                this.updateUI();
+            }
+            
+            handleFirstInteraction() {
+                if (!this.hasUserInteracted) {
+                    this.hasUserInteracted = true;
+                    this.startMusic();
+                }
+            }
+            
+            async startMusic() {
+                try {
+                    await this.audio.play();
+                    this.isPlaying = true;
+                    this.updateUI();
+                    this.showToast('🎵 Background music started');
+                } catch (error) {
+                    console.log('🎵 Autoplay prevented by browser:', error);
+                    this.showToast('🎵 Click the music icon to play');
+                }
+            }
+            
+            async toggleMusic() {
+                if (this.isPlaying) {
+                    this.audio.pause();
+                    this.isPlaying = false;
+                    this.showToast('🔇 Music paused');
+                } else {
+                    try {
+                        await this.audio.play();
+                        this.isPlaying = true;
+                        this.showToast('🎵 Music playing');
+                    } catch (error) {
+                        console.error('Error playing music:', error);
+                        this.showToast('❌ Could not play music');
+                    }
+                }
+                this.updateUI();
+            }
+            
+            updateUI() {
+                if (this.isPlaying) {
+                    // Playing state - show pause icon
+                    this.musicIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                    this.tooltip.textContent = 'Click to pause music';
+                    this.toggleBtn.classList.add('bg-primary/40');
+                    this.toggleBtn.classList.remove('bg-primary/20');
+                } else {
+                    // Paused state - show play icon
+                    this.musicIcon.innerHTML = '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>';
+                    this.tooltip.textContent = 'Click to play music';
+                    this.toggleBtn.classList.remove('bg-primary/40');
+                    this.toggleBtn.classList.add('bg-primary/20');
+                }
+                
+                // Add pulsing animation when playing
+                if (this.isPlaying) {
+                    this.musicIcon.classList.add('animate-pulse');
+                } else {
+                    this.musicIcon.classList.remove('animate-pulse');
+                }
+            }
+            
+            handleAudioError() {
+                console.error('🎵 Background music failed to load');
+                this.showToast('❌ Background music unavailable');
+                // Hide the music control if audio fails to load
+                document.getElementById('music-player').style.display = 'none';
+            }
+            
+            showToast(message) {
+                // Create toast notification
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-lg z-50 transition-all duration-300 opacity-0';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                // Animate in
+                setTimeout(() => toast.classList.remove('opacity-0'), 100);
+                
+                // Animate out and remove
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2000);
+            }
+        }
+        
+        // Initialize background music player when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new BackgroundMusicPlayer();
+        });
     </script>
 </body>
 </html>
