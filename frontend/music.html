@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Portfolio - NextSkill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#00FF88',
+                        'background-light': '#0A0A0A',
+                        'background-dark': '#050505',
+                        'text-light': '#FFFFFF',
+                        'text-muted': '#888888',
+                        'accent-600': '#10B981',
+                        'galaxy-purple': '#8B5CF6',
+                        'galaxy-blue': '#3B82F6',
+                        'galaxy-cyan': '#06B6D4',
+                        'music-orange': '#FF6B35',
+                        'music-pink': '#F72585',
+                        'music-yellow': '#FFBE0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d1b69 100%);
+            color: #FFFFFF;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .music-gradient {
+            background: linear-gradient(45deg, #FF6B35, #F72585, #7209B7, #560BAD);
+            background-size: 400% 400%;
+            animation: musicGradient 8s ease infinite;
+        }
+
+        @keyframes musicGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .track-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .track-card:hover {
+            transform: translateY(-5px);
+            border-color: #00FF88;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .audio-player {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .waveform {
+            height: 40px;
+            background: linear-gradient(90deg, #00FF88, #3B82F6, #8B5CF6);
+            border-radius: 20px;
+            opacity: 0.3;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.3; }
+            to { opacity: 0.7; }
+        }
+
+        .floating-notes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .note {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .genre-tag {
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #FF6B35;
+            color: #FF6B35;
+        }
+
+        .play-button {
+            background: linear-gradient(45deg, #00FF88, #10B981);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Floating Musical Notes Background -->
+    <div class="floating-notes">
+        <div class="note" style="left: 10%; animation-delay: 0s;">♪</div>
+        <div class="note" style="left: 20%; animation-delay: 2s;">♫</div>
+        <div class="note" style="left: 30%; animation-delay: 4s;">♪</div>
+        <div class="note" style="left: 40%; animation-delay: 6s;">♬</div>
+        <div class="note" style="left: 50%; animation-delay: 8s;">♪</div>
+        <div class="note" style="left: 60%; animation-delay: 10s;">♫</div>
+        <div class="note" style="left: 70%; animation-delay: 12s;">♪</div>
+        <div class="note" style="left: 80%; animation-delay: 14s;">♬</div>
+        <div class="note" style="left: 90%; animation-delay: 16s;">♪</div>
+    </div>
+
+    <!-- Header -->
+    <header class="glass-card border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="goHome()" class="px-4 py-2 glass-card rounded-lg hover:bg-white/10 transition-all">
+                        ← Back to NextSkill
+                    </button>
+                    <h1 class="text-2xl font-bold text-primary">Music Portfolio</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="auth.html" class="text-gray-300 hover:text-primary transition-all">Learning</a>
+                    <a href="about.html" class="text-gray-300 hover:text-primary transition-all">About</a>
+                    <a href="#contact" class="text-gray-300 hover:text-primary transition-all">Contact</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="music-gradient rounded-full w-32 h-32 mx-auto mb-8 flex items-center justify-center">
+                <div class="text-6xl">🎵</div>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                Code <span class="text-transparent bg-clip-text music-gradient">×</span> Music
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Where technology meets creativity. Explore my musical productions alongside my journey in software development.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button onclick="scrollToMusic()" class="px-8 py-4 music-gradient rounded-lg font-bold text-black hover:opacity-90 transition-all">
+                    🎧 Listen to My Music
+                </button>
+                <button onclick="goToLearning()" class="px-8 py-4 glass-card rounded-lg font-bold hover:bg-white/10 transition-all">
+                    💻 See My Tech Journey
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Current Playing Section -->
+    <section class="py-12" id="current-player">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="audio-player rounded-xl p-6 mb-8">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="play-button" id="main-play-btn">
+                        <div class="text-black text-xl">▶</div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold mb-1" id="current-title">Select a track to play</h3>
+                        <p class="text-gray-400" id="current-artist">Artist Name</p>
+                    </div>
+                    <div class="text-gray-400" id="current-duration">0:00 / 0:00</div>
+                </div>
+                <div class="waveform mb-4" id="waveform"></div>
+                <audio id="main-audio" controls class="w-full" style="display: none;">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+    </section>
+
+    <!-- Music Tracks Section -->
+    <section class="py-16" id="music-section">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">My Productions</h2>
+                <p class="text-gray-400 text-lg">A collection of beats, melodies, and vibes I've crafted</p>
+            </div>
+
+            <!-- Genre Filter -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <button onclick="filterTracks('all')" class="px-4 py-2 rounded-full genre-tag bg-primary text-black border-primary" data-genre="all">All</button>
+                <button onclick="filterTracks('electronic')" class="px-4 py-2 rounded-full genre-tag" data-genre="electronic">Electronic</button>
+                <button onclick="filterTracks('hip-hop')" class="px-4 py-2 rounded-full genre-tag" data-genre="hip-hop">Hip-Hop</button>
+                <button onclick="filterTracks('ambient')" class="px-4 py-2 rounded-full genre-tag" data-genre="ambient">Ambient</button>
+                <button onclick="filterTracks('experimental')" class="px-4 py-2 rounded-full genre-tag" data-genre="experimental">Experimental</button>
+            </div>
+
+            <!-- Tracks Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="tracks-grid">
+                <!-- Track cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Music Section -->
+    <section class="py-16 bg-black/20">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">The Sound Behind the Code</h2>
+            <div class="glass-card rounded-xl p-8">
+                <p class="text-lg text-gray-300 mb-6">
+                    Music production has been my creative outlet alongside software development. Both disciplines require patience, 
+                    attention to detail, and the ability to bring abstract ideas to life. Whether I'm debugging code or 
+                    perfecting a beat drop, the process of creation remains beautifully similar.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">🎹</div>
+                        <h3 class="font-bold mb-2">Digital Audio Workstation</h3>
+                        <p class="text-gray-400 text-sm">FL Studio, Ableton Live</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">🎤</div>
+                        <h3 class="font-bold mb-2">Recording & Mixing</h3>
+                        <p class="text-gray-400 text-sm">Professional audio production</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">🎧</div>
+                        <h3 class="font-bold mb-2">Sound Design</h3>
+                        <p class="text-gray-400 text-sm">Custom samples & synthesis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- External Platforms Section -->
+    <section class="py-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">Find My Music On</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <a href="#" class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🎵</div>
+                    <p class="font-bold">Spotify</p>
+                </a>
+                <a href="#" class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">☁️</div>
+                    <p class="font-bold">SoundCloud</p>
+                </a>
+                <a href="#" class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📺</div>
+                    <p class="font-bold">YouTube</p>
+                </a>
+                <a href="#" class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🍎</div>
+                    <p class="font-bold">Apple Music</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Sample track data - replace with your actual tracks
+        const tracks = [
+            {
+                id: 1,
+                title: "Digital Dreams",
+                artist: "Your Name",
+                genre: "electronic",
+                duration: "3:45",
+                coverUrl: "https://via.placeholder.com/300x300/FF6B35/FFFFFF?text=Digital+Dreams",
+                audioUrl: "", // Add your audio file URL or use external embed
+                description: "An ethereal journey through synthesized landscapes"
+            },
+            {
+                id: 2,
+                title: "Code Cipher",
+                artist: "Your Name", 
+                genre: "hip-hop",
+                duration: "4:12",
+                coverUrl: "https://via.placeholder.com/300x300/F72585/FFFFFF?text=Code+Cipher",
+                audioUrl: "",
+                description: "Hip-hop beats inspired by programming rhythms"
+            },
+            {
+                id: 3,
+                title: "Floating Point",
+                artist: "Your Name",
+                genre: "ambient",
+                duration: "5:33",
+                coverUrl: "https://via.placeholder.com/300x300/8B5CF6/FFFFFF?text=Floating+Point",
+                audioUrl: "",
+                description: "Ambient soundscapes for deep focus sessions"
+            },
+            {
+                id: 4,
+                title: "Algorithm Dreams",
+                artist: "Your Name",
+                genre: "experimental",
+                duration: "6:18",
+                coverUrl: "https://via.placeholder.com/300x300/3B82F6/FFFFFF?text=Algorithm+Dreams",
+                audioUrl: "",
+                description: "Experimental composition blending tech and music"
+            },
+            {
+                id: 5,
+                title: "Byte Beat",
+                artist: "Your Name",
+                genre: "electronic",
+                duration: "3:27",
+                coverUrl: "https://via.placeholder.com/300x300/10B981/FFFFFF?text=Byte+Beat",
+                audioUrl: "",
+                description: "Energetic electronic track for coding sessions"
+            },
+            {
+                id: 6,
+                title: "Neural Network",
+                artist: "Your Name",
+                genre: "ambient",
+                duration: "7:42",
+                coverUrl: "https://via.placeholder.com/300x300/FFBE0B/FFFFFF?text=Neural+Network",
+                audioUrl: "",
+                description: "Deep ambient exploration of artificial intelligence"
+            }
+        ];
+
+        let currentTrack = null;
+        let isPlaying = false;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTracks();
+            setupAudioPlayer();
+        });
+
+        // Render track cards
+        function renderTracks(filteredTracks = tracks) {
+            const grid = document.getElementById('tracks-grid');
+            grid.innerHTML = filteredTracks.map(track => `
+                <div class="track-card glass-card rounded-xl overflow-hidden" data-genre="${track.genre}">
+                    <div class="relative">
+                        <img src="${track.coverUrl}" alt="${track.title}" class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button onclick="playTrack(${track.id})" class="play-button">
+                                <div class="text-black text-xl">▶</div>
+                            </button>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="px-2 py-1 rounded-full text-xs genre-tag">${track.genre}</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">${track.title}</h3>
+                        <p class="text-gray-400 mb-2">${track.artist}</p>
+                        <p class="text-sm text-gray-500 mb-4">${track.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">${track.duration}</span>
+                            <button onclick="playTrack(${track.id})" class="px-4 py-2 bg-primary text-black rounded-lg font-bold hover:bg-accent-600 transition-all">
+                                Play
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter tracks by genre
+        function filterTracks(genre) {
+            // Update active filter button
+            document.querySelectorAll('[data-genre]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-black', 'border-primary');
+                btn.classList.add('genre-tag');
+            });
+            
+            const activeBtn = document.querySelector(`[data-genre="${genre}"]`);
+            activeBtn.classList.add('bg-primary', 'text-black', 'border-primary');
+            activeBtn.classList.remove('genre-tag');
+
+            // Filter and render tracks
+            const filteredTracks = genre === 'all' ? tracks : tracks.filter(track => track.genre === genre);
+            renderTracks(filteredTracks);
+        }
+
+        // Play track function
+        function playTrack(trackId) {
+            const track = tracks.find(t => t.id === trackId);
+            if (!track) return;
+
+            currentTrack = track;
+            
+            // Update player UI
+            document.getElementById('current-title').textContent = track.title;
+            document.getElementById('current-artist').textContent = track.artist;
+            document.getElementById('current-duration').textContent = `0:00 / ${track.duration}`;
+
+            // For demo purposes - in real implementation, load actual audio
+            showToast(`🎵 Now playing: ${track.title}`);
+            
+            // Scroll to player
+            document.getElementById('current-player').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Setup audio player
+        function setupAudioPlayer() {
+            const mainPlayBtn = document.getElementById('main-play-btn');
+            const audioElement = document.getElementById('main-audio');
+
+            mainPlayBtn.addEventListener('click', () => {
+                if (!currentTrack) {
+                    showToast('Please select a track first');
+                    return;
+                }
+
+                if (isPlaying) {
+                    audioElement.pause();
+                    mainPlayBtn.innerHTML = '<div class="text-black text-xl">▶</div>';
+                    isPlaying = false;
+                } else {
+                    // In real implementation, set audioElement.src = currentTrack.audioUrl
+                    showToast('🎵 Music player demo - connect your audio files');
+                    mainPlayBtn.innerHTML = '<div class="text-black text-xl">⏸</div>';
+                    isPlaying = true;
+                }
+            });
+        }
+
+        // Navigation functions
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function goToLearning() {
+            window.location.href = 'auth.html';
+        }
+
+        function scrollToMusic() {
+            document.getElementById('music-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-primary text-black px-6 py-3 rounded-lg z-50 transition-transform duration-300 transform translate-x-full';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
