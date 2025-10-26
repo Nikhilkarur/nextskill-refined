@@ -256,22 +256,71 @@
                     attention to detail, and the ability to bring abstract ideas to life. Whether I'm debugging code or 
                     perfecting a beat drop, the process of creation remains beautifully similar.
                 </p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                    <div class="text-center">
-                        <div class="text-3xl mb-2">🎹</div>
-                        <h3 class="font-bold mb-2">Digital Audio Workstation</h3>
-                        <p class="text-gray-400 text-sm">FL Studio, Ableton Live</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                    <!-- FL Studio Workflow -->
+                    <div class="text-left">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            🎹 FL Studio Workflow
+                        </h3>
+                        <div class="space-y-3 text-sm text-gray-300">
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                                <span>Melody composition in Piano Roll</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                                <span>Drum pattern creation in Step Sequencer</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                                <span>Sound design with native & VST plugins</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                                <span>Arrangement in Playlist view</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs font-bold">5</span>
+                                <span>Mixing & mastering in Mixer</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-3xl mb-2">🎤</div>
-                        <h3 class="font-bold mb-2">Recording & Mixing</h3>
-                        <p class="text-gray-400 text-sm">Professional audio production</p>
+                    
+                    <!-- Production Tools -->
+                    <div class="text-left">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            🔧 Production Arsenal
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <p class="font-bold text-primary mb-2">Synthesizers</p>
+                                <ul class="space-y-1 text-gray-400">
+                                    <li>• Serum</li>
+                                    <li>• Nexus</li>
+                                    <li>• Harmor</li>
+                                    <li>• Wasp</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-bold text-primary mb-2">Effects</p>
+                                <ul class="space-y-1 text-gray-400">
+                                    <li>• Fruity Reverb 2</li>
+                                    <li>• Parametric EQ 2</li>
+                                    <li>• Fruity Limiter</li>
+                                    <li>• Delay 3</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-3xl mb-2">🎧</div>
-                        <h3 class="font-bold mb-2">Sound Design</h3>
-                        <p class="text-gray-400 text-sm">Custom samples & synthesis</p>
-                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                    <p class="text-orange-300 font-bold mb-2">🎵 FL Studio Version: 21</p>
+                    <p class="text-gray-400 text-sm">
+                        All tracks produced using FL Studio's lifetime free updates program. 
+                        From MIDI composition to final mixdown, everything crafted in this powerful DAW.
+                    </p>
                 </div>
             </div>
         </div>
@@ -303,68 +352,39 @@
     </section>
 
     <script>
-        // Sample track data - replace with your actual tracks
+        // Your FL Studio Productions - Replace with your actual tracks
         const tracks = [
             {
                 id: 1,
-                title: "Digital Dreams",
-                artist: "Your Name",
-                genre: "electronic",
+                title: "Your Track Name",
+                artist: "Your Producer Name",
+                genre: "electronic", // or hip-hop, ambient, etc.
                 duration: "3:45",
-                coverUrl: "https://via.placeholder.com/300x300/FF6B35/FFFFFF?text=Digital+Dreams",
-                audioUrl: "", // Add your audio file URL or use external embed
-                description: "An ethereal journey through synthesized landscapes"
+                coverUrl: "https://via.placeholder.com/300x300/FF6B35/FFFFFF?text=Your+Track", // Replace with your cover art
+                audioUrl: "", // Add your audio file URL or external embed
+                flProject: "project_name.flp", // Your FL Studio project name
+                description: "Produced in FL Studio - Description of your track",
+                bpm: "128", // Your track's BPM
+                key: "C Major", // Musical key
+                plugins: ["Serum", "Nexus", "Kontakt"], // FL Studio plugins used
+                releaseDate: "2024"
             },
             {
                 id: 2,
-                title: "Code Cipher",
-                artist: "Your Name", 
+                title: "Another Production",
+                artist: "Your Producer Name", 
                 genre: "hip-hop",
                 duration: "4:12",
-                coverUrl: "https://via.placeholder.com/300x300/F72585/FFFFFF?text=Code+Cipher",
+                coverUrl: "https://via.placeholder.com/300x300/F72585/FFFFFF?text=Track+2",
                 audioUrl: "",
-                description: "Hip-hop beats inspired by programming rhythms"
+                flProject: "another_track.flp",
+                description: "FL Studio hip-hop beat with custom samples",
+                bpm: "95",
+                key: "A Minor",
+                plugins: ["808s", "Piano Roll", "Harmor"],
+                releaseDate: "2024"
             },
-            {
-                id: 3,
-                title: "Floating Point",
-                artist: "Your Name",
-                genre: "ambient",
-                duration: "5:33",
-                coverUrl: "https://via.placeholder.com/300x300/8B5CF6/FFFFFF?text=Floating+Point",
-                audioUrl: "",
-                description: "Ambient soundscapes for deep focus sessions"
-            },
-            {
-                id: 4,
-                title: "Algorithm Dreams",
-                artist: "Your Name",
-                genre: "experimental",
-                duration: "6:18",
-                coverUrl: "https://via.placeholder.com/300x300/3B82F6/FFFFFF?text=Algorithm+Dreams",
-                audioUrl: "",
-                description: "Experimental composition blending tech and music"
-            },
-            {
-                id: 5,
-                title: "Byte Beat",
-                artist: "Your Name",
-                genre: "electronic",
-                duration: "3:27",
-                coverUrl: "https://via.placeholder.com/300x300/10B981/FFFFFF?text=Byte+Beat",
-                audioUrl: "",
-                description: "Energetic electronic track for coding sessions"
-            },
-            {
-                id: 6,
-                title: "Neural Network",
-                artist: "Your Name",
-                genre: "ambient",
-                duration: "7:42",
-                coverUrl: "https://via.placeholder.com/300x300/FFBE0B/FFFFFF?text=Neural+Network",
-                audioUrl: "",
-                description: "Deep ambient exploration of artificial intelligence"
-            }
+            // Add more of your FL Studio productions here
         ];
 
         let currentTrack = null;
@@ -391,17 +411,38 @@
                         <div class="absolute top-4 right-4">
                             <span class="px-2 py-1 rounded-full text-xs genre-tag">${track.genre}</span>
                         </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-2 py-1 rounded-full text-xs bg-orange-500/20 border border-orange-500 text-orange-300">🎹 FL Studio</span>
+                        </div>
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-bold mb-2">${track.title}</h3>
                         <p class="text-gray-400 mb-2">${track.artist}</p>
-                        <p class="text-sm text-gray-500 mb-4">${track.description}</p>
+                        <p class="text-sm text-gray-500 mb-3">${track.description}</p>
+                        
+                        ${track.bpm ? `
+                        <div class="flex flex-wrap gap-2 mb-4 text-xs">
+                            <span class="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">BPM: ${track.bpm}</span>
+                            <span class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">Key: ${track.key}</span>
+                            <span class="px-2 py-1 bg-green-500/20 text-green-300 rounded">${track.releaseDate}</span>
+                        </div>
+                        ` : ''}
+                        
                         <div class="flex justify-between items-center">
                             <span class="text-sm text-gray-400">${track.duration}</span>
                             <button onclick="playTrack(${track.id})" class="px-4 py-2 bg-primary text-black rounded-lg font-bold hover:bg-accent-600 transition-all">
                                 Play
                             </button>
                         </div>
+                        
+                        ${track.plugins ? `
+                        <div class="mt-3 pt-3 border-t border-gray-700">
+                            <p class="text-xs text-gray-500 mb-1">FL Studio Plugins:</p>
+                            <div class="flex flex-wrap gap-1">
+                                ${track.plugins.map(plugin => `<span class="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded">${plugin}</span>`).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
