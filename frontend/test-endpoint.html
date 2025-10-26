@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Production Dashboard</title>
+    <style>body { font-family: Arial; padding: 20px; background: #1a1a1a; color: white; }</style>
+</head>
+<body>
+    <h1>🔍 Test Production Dashboard Endpoint</h1>
+    <button onclick="testDashboard()">Test Dashboard via Netlify Proxy</button>
+    <button onclick="testDashboardDirect()">Test Dashboard Direct to Render</button>
+    <div id="result" style="margin-top: 20px; padding: 15px; background: #333; border-radius: 5px;"></div>
+
+    <script>
+        async function testDashboard() {
+            const result = document.getElementById('result');
+            result.innerHTML = '🔄 Testing via Netlify proxy...';
+            
+            try {
+                const response = await fetch('/api/users/dashboard', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer test-token',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                result.innerHTML = `📡 Netlify Proxy Response:<br>Status: ${response.status}<br>StatusText: ${response.statusText}`;
+                
+                if (response.status === 401) {
+                    result.innerHTML += '<br>✅ Endpoint reachable (401 expected without valid token)';
+                } else {
+                    const text = await response.text();
+                    result.innerHTML += `<br>Body: ${text}`;
+                }
+            } catch (error) {
+                result.innerHTML = `❌ Netlify Proxy Error: ${error.message}`;
+            }
+        }
+        
+        async function testDashboardDirect() {
+            const result = document.getElementById('result');
+            result.innerHTML = '🔄 Testing direct to Render...';
+            
+            try {
+                const response = await fetch('https://nextskill-refined3.onrender.com/api/users/dashboard', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer test-token',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                result.innerHTML = `🎯 Direct Response:<br>Status: ${response.status}<br>StatusText: ${response.statusText}`;
+                
+                if (response.status === 401) {
+                    result.innerHTML += '<br>✅ Endpoint reachable (401 expected without valid token)';
+                } else {
+                    const text = await response.text();
+                    result.innerHTML += `<br>Body: ${text}`;
+                }
+            } catch (error) {
+                result.innerHTML = `❌ Direct Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

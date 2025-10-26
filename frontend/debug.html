@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Smart Redirect</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a1a; color: white; }
+        .test-box { background: #2a2a2a; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 5px; background: #00FF88; color: black; border: none; border-radius: 5px; cursor: pointer; }
+        .result { background: #333; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔍 NextSkill Smart Redirect Debug Tool</h1>
+    
+    <div class="test-box">
+        <h3>1. Test Dashboard Endpoint</h3>
+        <input type="email" id="email" placeholder="Your email" style="padding: 8px; margin: 5px; width: 200px;">
+        <input type="password" id="password" placeholder="Your password" style="padding: 8px; margin: 5px; width: 200px;">
+        <br>
+        <button onclick="testLogin()">Login & Check Dashboard</button>
+        <div id="login-result" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h3>2. Check Your User Data</h3>
+        <button onclick="checkRoadmaps()">Check My Roadmaps</button>
+        <div id="roadmap-result" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h3>3. Test Redirect Logic</h3>
+        <button onclick="simulateRedirect()">Simulate Smart Redirect</button>
+        <div id="redirect-result" class="result"></div>
+    </div>
+
+    <script>
+        let currentToken = localStorage.getItem('ns_token');
+        
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('login-result');
+            
+            if (!email || !password) {
+                resultDiv.innerHTML = '❌ Please enter email and password';
+                return;
+            }
+            
+            try {
+                // Login
+                const loginResponse = await fetch('https://nextskill-refined3.onrender.com/api/auth/signin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const loginData = await loginResponse.json();
+                
+                if (loginData.token) {
+                    currentToken = loginData.token;
+                    localStorage.setItem('ns_token', currentToken);
+                    resultDiv.innerHTML = `✅ Login successful! Token: ${currentToken.substring(0, 20)}...`;
+                    
+                    // Test dashboard
+                    setTimeout(checkDashboard, 1000);
+                } else {
+                    resultDiv.innerHTML = `❌ Login failed: ${JSON.stringify(loginData)}`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Login error: ${error.message}`;
+            }
+        }
+        
+        async function checkDashboard() {
+            const resultDiv = document.getElementById('login-result');
+            
+            if (!currentToken) {
+                resultDiv.innerHTML += '<br>❌ No token available';
+                return;
+            }
+            
+            try {
+                const dashboardResponse = await fetch('https://nextskill-refined3.onrender.com/api/users/dashboard', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const dashboardData = await dashboardResponse.json();
+                resultDiv.innerHTML += `<br><br>📊 Dashboard Response:<br>${JSON.stringify(dashboardData, null, 2)}`;
+                
+                if (dashboardData.redirectTo === 'roadmap') {
+                    resultDiv.innerHTML += '<br><br>✅ Should redirect to ROADMAP (has completed questionnaire)';
+                } else if (dashboardData.redirectTo === 'questions') {
+                    resultDiv.innerHTML += '<br><br>ℹ️ Should redirect to QUESTIONS (new user)';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<br>❌ Dashboard error: ${error.message}`;
+            }
+        }
+        
+        async function checkRoadmaps() {
+            const resultDiv = document.getElementById('roadmap-result');
+            
+            if (!currentToken) {
+                resultDiv.innerHTML = '❌ Please login first';
+                return;
+            }
+            
+            try {
+                const roadmapsResponse = await fetch('https://nextskill-refined3.onrender.com/api/roadmaps/mine', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const roadmapsData = await roadmapsResponse.json();
+                resultDiv.innerHTML = `🗺️ Your Roadmaps:<br>${JSON.stringify(roadmapsData, null, 2)}`;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Roadmaps error: ${error.message}`;
+            }
+        }
+        
+        async function simulateRedirect() {
+            const resultDiv = document.getElementById('redirect-result');
+            
+            if (!currentToken) {
+                resultDiv.innerHTML = '❌ Please login first';
+                return;
+            }
+            
+            try {
+                // This simulates what the auth.js does
+                const dashboardResponse = await fetch('https://nextskill-refined3.onrender.com/api/users/dashboard', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const dashboardData = await dashboardResponse.json();
+                
+                if (dashboardData?.redirectTo) {
+                    if (dashboardData.redirectTo === 'roadmap') {
+                        resultDiv.innerHTML = `✅ REDIRECT TO: roadmap.html<br>Reason: User has ${dashboardData.totalRoadmaps} roadmap(s)`;
+                    } else {
+                        resultDiv.innerHTML = `ℹ️ REDIRECT TO: questions.html<br>Reason: New user, no roadmaps`;
+                    }
+                } else {
+                    resultDiv.innerHTML = '❌ No redirect info received';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Simulation error: ${error.message}`;
+            }
+        }
+        
+        // Auto-load token if available
+        if (currentToken) {
+            document.getElementById('login-result').innerHTML = `🔑 Token loaded from localStorage: ${currentToken.substring(0, 20)}...`;
+        }
+    </script>
+</body>
+</html>
