@@ -80,6 +80,49 @@
     }
   });
 
+  async function checkUserDashboardAndRedirect() {
+    try {
+      let dashboardResponse;
+      
+      // Use NSHttp if available for authenticated requests
+      if (globalThis.NSHttp && typeof globalThis.NSHttp.request === 'function') {
+        dashboardResponse = await globalThis.NSHttp.request('/api/users/dashboard', {
+          method: 'GET'
+        });
+      } else {
+        const token = localStorage.getItem('ns_token');
+        const r = await fetch('/api/users/dashboard', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        dashboardResponse = await r.json();
+      }
+
+      if (dashboardResponse?.redirectTo) {
+        if (dashboardResponse.redirectTo === 'roadmap') {
+          // User has existing roadmaps, redirect to roadmap page
+          console.log('[Auth] Existing user with roadmaps, redirecting to roadmap');
+          setTimeout(() => globalThis.location.assign('roadmap.html'), 700);
+        } else {
+          // New user, redirect to questions
+          console.log('[Auth] New user, redirecting to questions');
+          setTimeout(() => globalThis.location.assign('questions.html'), 700);
+        }
+      } else {
+        // Fallback to questions if unclear
+        setTimeout(() => globalThis.location.assign('questions.html'), 700);
+      }
+
+    } catch (error) {
+      console.error('[Auth] Error checking dashboard:', error);
+      // Fallback to questions page on error
+      setTimeout(() => globalThis.location.assign('questions.html'), 700);
+    }
+  }
+
   async function handleAuth(type, email, password) {
     // Buttons in the markup are `signin-btn` and `signup-btn`
     const submitBtn = qs(type === 'signin' ? '#signin-btn' : '#signup-btn');
@@ -120,8 +163,8 @@
         
         showToast(`${type === 'signin' ? 'Signed in' : 'Account created'} successfully!`);
         
-        // Redirect to questions
-        setTimeout(() => globalThis.location.assign('questions.html'), 700);
+        // Check user dashboard to determine redirect
+        await checkUserDashboardAndRedirect();
       } else {
         throw new Error('Invalid response from server');
       }
