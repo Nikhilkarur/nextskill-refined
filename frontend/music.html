@@ -387,14 +387,6 @@
             // Add more of your FL Studio productions here
         ];
 
-        let currentTrack = null;
-        let isPlaying = false;
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            renderTracks();
-            setupAudioPlayer();
-        });
 
         // Render track cards
         function renderTracks(filteredTracks = tracks) {
@@ -465,47 +457,76 @@
             renderTracks(filteredTracks);
         }
 
-        // Play track function
-        function playTrack(trackId) {
-            const track = tracks.find(t => t.id === trackId);
-            if (!track) return;
+        // --- Refactored Music Player Logic ---
+        class MusicPlayer {
+            constructor(tracks) {
+                this.tracks = tracks;
+                this.currentTrack = null;
+                this.isPlaying = false;
 
-            currentTrack = track;
-            
-            // Update player UI
-            document.getElementById('current-title').textContent = track.title;
-            document.getElementById('current-artist').textContent = track.artist;
-            document.getElementById('current-duration').textContent = `0:00 / ${track.duration}`;
+                this.playerTitle = document.getElementById('current-title');
+                this.playerArtist = document.getElementById('current-artist');
+                this.playerDuration = document.getElementById('current-duration');
+                this.mainPlayBtn = document.getElementById('main-play-btn');
+                this.audioElement = document.getElementById('main-audio');
 
-            // For demo purposes - in real implementation, load actual audio
-            showToast(`🎵 Now playing: ${track.title}`);
-            
-            // Scroll to player
-            document.getElementById('current-player').scrollIntoView({ behavior: 'smooth' });
-        }
+                this.mainPlayBtn.addEventListener('click', () => this.togglePlay());
+            }
 
-        // Setup audio player
-        function setupAudioPlayer() {
-            const mainPlayBtn = document.getElementById('main-play-btn');
-            const audioElement = document.getElementById('main-audio');
+            playTrack(trackId) {
+                const track = this.tracks.find(t => t.id === trackId);
+                if (!track) return;
 
-            mainPlayBtn.addEventListener('click', () => {
-                if (!currentTrack) {
+                this.currentTrack = track;
+                this.playerTitle.textContent = track.title;
+                this.playerArtist.textContent = track.artist;
+                this.playerDuration.textContent = `0:00 / ${track.duration}`;
+
+                // In a real implementation, you would load the audio here:
+                // this.audioElement.src = track.audioUrl;
+                // this.audioElement.play();
+                // this.isPlaying = true;
+
+                this.updatePlayButton();
+                showToast(`🎵 Now playing: ${track.title}`);
+                document.getElementById('current-player').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            togglePlay() {
+                if (!this.currentTrack) {
                     showToast('Please select a track first');
                     return;
                 }
 
-                if (isPlaying) {
-                    audioElement.pause();
-                    mainPlayBtn.innerHTML = '<div class="text-black text-xl">▶</div>';
-                    isPlaying = false;
+                if (this.isPlaying) {
+                    // this.audioElement.pause();
+                    this.isPlaying = false;
+                    showToast('Playback paused (demo)');
                 } else {
-                    // In real implementation, set audioElement.src = currentTrack.audioUrl
-                    showToast('🎵 Music player demo - connect your audio files');
-                    mainPlayBtn.innerHTML = '<div class="text-black text-xl">⏸</div>';
-                    isPlaying = true;
+                    // this.audioElement.play();
+                    this.isPlaying = true;
+                    showToast('Playback started (demo)');
                 }
-            });
+                this.updatePlayButton();
+            }
+
+            updatePlayButton() {
+                this.mainPlayBtn.innerHTML = `<div class="text-black text-xl">${this.isPlaying ? '⏸' : '▶'}</div>`;
+            }
+        }
+
+        // Global instance for onclick handlers
+        let musicPlayer;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            musicPlayer = new MusicPlayer(tracks);
+            renderTracks();
+        });
+
+        // Wrapper function for legacy onclick attribute
+        function playTrack(trackId) {
+            musicPlayer.playTrack(trackId);
         }
 
         // Navigation functions

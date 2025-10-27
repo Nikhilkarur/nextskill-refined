@@ -364,41 +364,6 @@
             }
         ];
 
-        // State management
-        let currentQuestion = 0;
-        let answers = {};
-        let resumeFile = null;
-
-        // DOM elements
-        const questionContent = document.getElementById('question-content');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-
-        // Initialize questionnaire
-        function initQuestionnaire() {
-            renderQuestion();
-            updateProgress();
-            updateNavigation();
-            
-            // Event listeners
-            prevBtn.addEventListener('click', () => {
-                if (currentQuestion > 0) {
-                    currentQuestion--;
-                    renderQuestion();
-                    updateProgress();
-                    updateNavigation();
-                }
-            });
-            nextBtn.addEventListener('click', nextQuestion);
-            
-            // Initialize questionnaire
-            renderQuestion();
-            updateProgress();
-            updateNavigation();
-        }
-
         // Render current question
         function renderQuestion() {
             if (currentQuestion >= questions.length) {
@@ -843,10 +808,35 @@
 
         // Initialize everything
         document.addEventListener('DOMContentLoaded', function() {
+            // Note: A class-based approach could further organize this state and logic.
+            // For now, the existing functional approach is maintained.
             console.log('[Questions] script version QUEST_OCT21C loaded');
             initQuestionnaire();
             initFloatingParticles();
             initScrollAnimations();
         });
+
+        // State management
+        let currentQuestion = 0;
+        let answers = {};
+        let resumeFile = null;
+
+        // DOM elements
+        const questionContent = document.getElementById('question-content');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Initialize questionnaire
+        function initQuestionnaire() {
+            renderQuestion();
+            updateProgress();
+            updateNavigation();
+            
+            // Event listeners
+            prevBtn.addEventListener('click', previousQuestion);
+            nextBtn.addEventListener('click', nextQuestion);
+        }
     </script>
 </html>

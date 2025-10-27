@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth - NextSkill (LOCAL DEV)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- LOCAL CONFIG - Point to localhost backend -->
+    <script>
+        window.NS_CONFIG = {
+            API_BASE: 'http://localhost:8080'
+        };
+    </script>
+    <!-- Load HTTP helper for backend API calls -->
+    <script src="./assets/js/http.js?v=OCT21D"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#00FF88',
+                        'background-light': '#0A0A0A',
+                        'background-dark': '#050505',
+                        'text-light': '#FFFFFF',
+                        'text-muted': '#888888',
+                        'accent-600': '#10B981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #FFFFFF;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            background: #00FF88;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    
+    <div class="max-w-md w-full mx-4">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-primary mb-2">NextSkill</h1>
+            <p class="text-gray-300">LOCAL DEV - Start your learning journey</p>
+        </div>
+
+        <!-- Auth Container -->
+        <div class="glass-card rounded-xl p-8">
+            
+            <!-- Tab Headers -->
+            <div class="flex bg-gray-800 rounded-lg p-1 mb-6">
+                <button id="signin-tab" class="tab-button flex-1 py-3 rounded-md font-medium active">
+                    Sign In
+                </button>
+                <button id="signup-tab" class="tab-button flex-1 py-3 rounded-md font-medium">
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- Error Message -->
+            <div id="auth-error" class="hidden bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm"></div>
+
+            <!-- Sign In Form -->
+            <form id="signin-form" class="space-y-4">
+                <div>
+                    <label for="signin-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input type="email" id="signin-email" name="email" required 
+                           class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white">
+                </div>
+                <div>
+                    <label for="signin-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <input type="password" id="signin-password" name="password" required 
+                           class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white">
+                </div>
+                <button type="submit" id="signin-btn" 
+                        class="w-full bg-primary text-black py-3 rounded-lg font-bold hover:bg-accent-600 transition-all disabled:opacity-50">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signup-form" class="space-y-4 hidden">
+                <div>
+                    <label for="signup-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input type="email" id="signup-email" name="email" required 
+                           class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white">
+                </div>
+                <div>
+                    <label for="signup-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <input type="password" id="signup-password" name="password" required 
+                           class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white">
+                </div>
+                <button type="submit" id="signup-btn"
+                        class="w-full bg-primary text-black py-3 rounded-lg font-bold hover:bg-accent-600 transition-all disabled:opacity-50">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- Status -->
+            <div class="mt-6 text-center text-sm text-gray-400">
+                <p>🔧 Local Development Mode</p>
+                <p>Backend: <span class="text-primary">localhost:8080</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load auth script -->
+    <script src="./assets/js/auth.js"></script>
+</body>
+</html>

@@ -389,6 +389,8 @@
     <!-- Background Music Control Script -->
     <script>
         class BackgroundMusicPlayer {
+            static INITIAL_VOLUME = 0.3; // 30% volume
+
             constructor() {
                 this.audio = document.getElementById('background-music');
                 this.toggleBtn = document.getElementById('music-toggle');
@@ -403,7 +405,7 @@
             
             init() {
                 // Set initial volume
-                this.audio.volume = 0.3; // 30% volume for background music
+                this.audio.volume = BackgroundMusicPlayer.INITIAL_VOLUME;
                 
                 // Add event listeners
                 this.toggleBtn.addEventListener('click', () => this.toggleMusic());
