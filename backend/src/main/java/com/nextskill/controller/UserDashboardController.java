@@ -26,33 +26,59 @@ public class UserDashboardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/dashboard")
     public ResponseEntity<DashboardResponse> getDashboard(Authentication auth) {
-        return userRepository.findByEmail(auth.getName())
-                .map(user -> {
-                    List<Roadmap> userRoadmaps = roadmapRepository.findByUser(user);
-                    
-                    DashboardResponse response = new DashboardResponse();
-                    response.hasCompletedQuestionnaire = !userRoadmaps.isEmpty();
-                    response.totalRoadmaps = userRoadmaps.size();
-                    
-                    if (!userRoadmaps.isEmpty()) {
-                        // Get the most recent roadmap
-                        Roadmap latestRoadmap = userRoadmaps.get(userRoadmaps.size() - 1);
-                        response.latestRoadmap = LatestRoadmapInfo.from(latestRoadmap);
-                        response.redirectTo = "roadmap";
-                    } else {
-                        response.redirectTo = "questions";
-                    }
-                    
-                    return ResponseEntity.ok(response);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            System.out.println("[Dashboard] Request from user: " + auth.getName());
+            
+            return userRepository.findByEmail(auth.getName())
+                    .map(user -> {
+                        System.out.println("[Dashboard] Found user with ID: " + user.getId());
+                        
+                        List<Roadmap> userRoadmaps = roadmapRepository.findByUser(user);
+                        System.out.println("[Dashboard] User has " + userRoadmaps.size() + " roadmaps");
+                        
+                        DashboardResponse response = new DashboardResponse();
+                        response.setUserId(user.getId());
+                        response.setUserEmail(user.getEmail());
+                        response.setHasCompletedQuestionnaire(!userRoadmaps.isEmpty());
+                        response.setTotalRoadmaps(userRoadmaps.size());
+                        
+                        if (!userRoadmaps.isEmpty()) {
+                            // Get the most recent roadmap
+                            Roadmap latestRoadmap = userRoadmaps.get(userRoadmaps.size() - 1);
+                            response.setLatestRoadmap(LatestRoadmapInfo.from(latestRoadmap));
+                            response.setRedirectTo("roadmap");
+                            System.out.println("[Dashboard] Redirecting to roadmap page");
+                        } else {
+                            response.setRedirectTo("questions");
+                            System.out.println("[Dashboard] Redirecting to questions page");
+                        }
+                        
+                        return ResponseEntity.ok(response);
+                    })
+                    .orElseGet(() -> {
+                        System.out.println("[Dashboard] User not found: " + auth.getName());
+                        return ResponseEntity.notFound().build();
+                    });
+        } catch (Exception e) {
+            System.err.println("[Dashboard] Error processing request: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     public static class DashboardResponse {
+        private Long userId;
+        private String userEmail;
         private boolean hasCompletedQuestionnaire;
         private LatestRoadmapInfo latestRoadmap;
         private int totalRoadmaps;
         private String redirectTo;
+
+        public Long getUserId() { return userId; }
+        public void setUserId(Long userId) { this.userId = userId; }
+
+        public String getUserEmail() { return userEmail; }
+        public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 
         public boolean isHasCompletedQuestionnaire() { return hasCompletedQuestionnaire; }
         public void setHasCompletedQuestionnaire(boolean hasCompletedQuestionnaire) { this.hasCompletedQuestionnaire = hasCompletedQuestionnaire; }

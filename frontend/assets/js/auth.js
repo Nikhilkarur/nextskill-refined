@@ -82,14 +82,21 @@
 
   async function checkUserDashboardAndRedirect() {
     try {
+      console.log('[Auth] Checking user dashboard for smart redirect...');
+      
+      // Show a loading message to user
+      showToast('Loading your dashboard...');
+      
       let dashboardResponse;
       
       // Use NSHttp if available for authenticated requests
       if (globalThis.NSHttp && typeof globalThis.NSHttp.request === 'function') {
+        console.log('[Auth] Using NSHttp for dashboard request...');
         dashboardResponse = await globalThis.NSHttp.request('/api/users/dashboard', {
           method: 'GET'
         });
       } else {
+        console.log('[Auth] Using fetch for dashboard request...');
         const token = localStorage.getItem('ns_token');
         const r = await fetch('/api/users/dashboard', {
           method: 'GET',
@@ -98,28 +105,40 @@
             'Content-Type': 'application/json'
           }
         });
+        
+        if (!r.ok) {
+          throw new Error(`Dashboard request failed: ${r.status} ${r.statusText}`);
+        }
+        
         dashboardResponse = await r.json();
       }
+
+      console.log('[Auth] Dashboard response:', dashboardResponse);
 
       if (dashboardResponse?.redirectTo) {
         if (dashboardResponse.redirectTo === 'roadmap') {
           // User has existing roadmaps, redirect to roadmap page
           console.log('[Auth] Existing user with roadmaps, redirecting to roadmap');
-          setTimeout(() => globalThis.location.assign('roadmap.html'), 700);
+          showToast('Welcome back! Continuing your learning journey...');
+          setTimeout(() => globalThis.location.assign('roadmap.html'), 1500);
         } else {
           // New user, redirect to questions
           console.log('[Auth] New user, redirecting to questions');
-          setTimeout(() => globalThis.location.assign('questions.html'), 700);
+          showToast('Welcome! Let\'s create your personalized roadmap...');
+          setTimeout(() => globalThis.location.assign('questions.html'), 1500);
         }
       } else {
         // Fallback to questions if unclear
-        setTimeout(() => globalThis.location.assign('questions.html'), 700);
+        console.log('[Auth] Unclear redirect, defaulting to questions');
+        showToast('Welcome! Let\'s get started...');
+        setTimeout(() => globalThis.location.assign('questions.html'), 1500);
       }
 
     } catch (error) {
       console.error('[Auth] Error checking dashboard:', error);
+      showToast('Welcome! Let\'s get started with your questionnaire...');
       // Fallback to questions page on error
-      setTimeout(() => globalThis.location.assign('questions.html'), 700);
+      setTimeout(() => globalThis.location.assign('questions.html'), 1500);
     }
   }
 
@@ -161,10 +180,15 @@
         localStorage.setItem('ns_token', response.token);
         localStorage.setItem('currentUser', JSON.stringify({ email }));
         
-        showToast(`${type === 'signin' ? 'Signed in' : 'Account created'} successfully!`);
-        
-        // Check user dashboard to determine redirect
-        await checkUserDashboardAndRedirect();
+        if (type === 'signup') {
+          // New signup - always go to questionnaire
+          showToast('Account created successfully! Let\'s create your roadmap...');
+          setTimeout(() => globalThis.location.assign('questions.html'), 1500);
+        } else {
+          // Existing user signin - check dashboard for smart redirect
+          showToast('Signed in successfully!');
+          await checkUserDashboardAndRedirect();
+        }
       } else {
         throw new Error('Invalid response from server');
       }
