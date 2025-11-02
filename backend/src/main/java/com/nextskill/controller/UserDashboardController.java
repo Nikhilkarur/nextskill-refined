@@ -33,52 +33,83 @@ public class UserDashboardController {
                     .map(user -> {
                         System.out.println("[Dashboard] Found user with ID: " + user.getId());
                         
-                        List<Roadmap> userRoadmaps = roadmapRepository.findByUser(user);
-                        System.out.println("[Dashboard] User has " + userRoadmaps.size() + " roadmaps");
-                        
-                        // Debug: List all roadmap IDs and details
-                        if (!userRoadmaps.isEmpty()) {
-                            System.out.println("[Dashboard] Roadmap details:");
-                            for (int i = 0; i < userRoadmaps.size(); i++) {
-                                Roadmap rm = userRoadmaps.get(i);
-                                System.out.println("  [" + i + "] ID=" + rm.getId() + ", Role=" + rm.getRole() + ", Created=" + rm.getCreatedAt());
-                            }
-                        }
-                        
                         DashboardResponse response = new DashboardResponse();
                         response.setUserId(user.getId());
                         response.setUserEmail(user.getEmail());
-                        response.setHasCompletedQuestionnaire(!userRoadmaps.isEmpty());
-                        response.setTotalRoadmaps(userRoadmaps.size());
                         
-                        if (!userRoadmaps.isEmpty()) {
-                            // Get the most recent roadmap
-                            Roadmap latestRoadmap = userRoadmaps.get(userRoadmaps.size() - 1);
-                            try {
-                                response.setLatestRoadmap(LatestRoadmapInfo.from(latestRoadmap));
-                                response.setRedirectTo("roadmap");
-                                System.out.println("[Dashboard] Redirecting to roadmap page");
-                            } catch (Exception e) {
-                                System.err.println("[Dashboard] Error processing latest roadmap: " + e.getMessage());
-                                // Fallback: treat as if no roadmaps exist
-                                response.setRedirectTo("questions");
-                                System.out.println("[Dashboard] Fallback: Redirecting to questions page due to roadmap processing error");
+                        try {
+                            List<Roadmap> userRoadmaps = roadmapRepository.findByUser(user);
+                            System.out.println("[Dashboard] User has " + userRoadmaps.size() + " roadmaps");
+                            
+                            // Debug: List all roadmap IDs and details
+                            if (!userRoadmaps.isEmpty()) {
+                                System.out.println("[Dashboard] Roadmap details:");
+                                for (int i = 0; i < userRoadmaps.size(); i++) {
+                                    Roadmap rm = userRoadmaps.get(i);
+                                    System.out.println("  [" + i + "] ID=" + rm.getId() + ", Role=" + rm.getRole() + ", Created=" + rm.getCreatedAt());
+                                }
                             }
-                        } else {
+                            
+                            response.setTotalRoadmaps(userRoadmaps.size());
+                            response.setHasCompletedQuestionnaire(!userRoadmaps.isEmpty());
+                            
+                            if (!userRoadmaps.isEmpty()) {
+                                // Get the most recent roadmap with defensive handling
+                                try {
+                                    Roadmap latestRoadmap = userRoadmaps.get(userRoadmaps.size() - 1);
+                                    if (latestRoadmap != null) {
+                                        LatestRoadmapInfo roadmapInfo = LatestRoadmapInfo.from(latestRoadmap);
+                                        if (roadmapInfo != null) {
+                                            response.setLatestRoadmap(roadmapInfo);
+                                            response.setRedirectTo("roadmap");
+                                            System.out.println("[Dashboard] SUCCESS: Redirecting to roadmap page");
+                                            return ResponseEntity.ok(response);
+                                        }
+                                    }
+                                    // If roadmap processing failed, fall through to questions
+                                    System.out.println("[Dashboard] Roadmap processing failed, defaulting to questions");
+                                } catch (Exception roadmapError) {
+                                    System.err.println("[Dashboard] Error processing roadmap: " + roadmapError.getMessage());
+                                    roadmapError.printStackTrace();
+                                }
+                            }
+                            
+                            // Default case: redirect to questions
                             response.setRedirectTo("questions");
                             System.out.println("[Dashboard] Redirecting to questions page");
+                            return ResponseEntity.ok(response);
+                            
+                        } catch (Exception repositoryError) {
+                            System.err.println("[Dashboard] Repository error: " + repositoryError.getMessage());
+                            repositoryError.printStackTrace();
+                            
+                            // Complete fallback: assume new user
+                            response.setHasCompletedQuestionnaire(false);
+                            response.setTotalRoadmaps(0);
+                            response.setLatestRoadmap(null);
+                            response.setRedirectTo("questions");
+                            System.out.println("[Dashboard] Repository fallback: Redirecting to questions");
+                            return ResponseEntity.ok(response);
                         }
-                        
-                        return ResponseEntity.ok(response);
                     })
                     .orElseGet(() -> {
                         System.out.println("[Dashboard] User not found: " + auth.getName());
-                        return ResponseEntity.notFound().build();
+                        return ResponseEntity.status(401).build();
                     });
         } catch (Exception e) {
-            System.err.println("[Dashboard] Error processing request: " + e.getMessage());
+            System.err.println("[Dashboard] Critical error processing request: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
+            
+            // Absolute fallback: return a safe response
+            DashboardResponse safeResponse = new DashboardResponse();
+            safeResponse.setUserId(null);
+            safeResponse.setUserEmail(auth.getName());
+            safeResponse.setHasCompletedQuestionnaire(false);
+            safeResponse.setTotalRoadmaps(0);
+            safeResponse.setLatestRoadmap(null);
+            safeResponse.setRedirectTo("questions");
+            System.out.println("[Dashboard] Critical fallback: Returning safe response");
+            return ResponseEntity.ok(safeResponse);
         }
     }
 

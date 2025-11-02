@@ -713,6 +713,8 @@
                 if (roadmapJson) {
                     // Persist for roadmap view as fallback
                     try { localStorage.setItem('lastRoadmapJson', typeof roadmapJson === 'string' ? roadmapJson : JSON.stringify(roadmapJson)); } catch {}
+                    // Signal that user has completed questionnaire for smart redirect fallback
+                    try { localStorage.setItem('ns_completed_questionnaire', 'true'); } catch {}
                 }
 
                 // Navigate to roadmap regardless (backend may still persist or will be generated on load)

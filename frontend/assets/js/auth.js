@@ -88,56 +88,83 @@
       showToast('Loading your dashboard...');
       
       let dashboardResponse;
+      let redirectDecision = 'questions'; // Safe default
       
-      // Use NSHttp if available for authenticated requests
-      if (globalThis.NSHttp && typeof globalThis.NSHttp.request === 'function') {
-        console.log('[Auth] Using NSHttp for dashboard request...');
-        dashboardResponse = await globalThis.NSHttp.request('/api/users/dashboard', {
-          method: 'GET'
-        });
-      } else {
-        console.log('[Auth] Using fetch for dashboard request...');
-        const token = localStorage.getItem('ns_token');
-        const r = await fetch('/api/users/dashboard', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+      try {
+        // Use NSHttp if available for authenticated requests
+        if (globalThis.NSHttp && typeof globalThis.NSHttp.request === 'function') {
+          console.log('[Auth] Using NSHttp for dashboard request...');
+          dashboardResponse = await globalThis.NSHttp.request('/api/users/dashboard', {
+            method: 'GET'
+          });
+        } else {
+          console.log('[Auth] Using fetch for dashboard request...');
+          const token = localStorage.getItem('ns_token');
+          const r = await fetch('/api/users/dashboard', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!r.ok) {
+            throw new Error(`Dashboard request failed: ${r.status} ${r.statusText}`);
           }
-        });
-        
-        if (!r.ok) {
-          throw new Error(`Dashboard request failed: ${r.status} ${r.statusText}`);
+          
+          dashboardResponse = await r.json();
+        }
+
+        console.log('[Auth] Dashboard response:', dashboardResponse);
+
+        // Bulletproof redirect decision logic
+        if (dashboardResponse && typeof dashboardResponse === 'object') {
+          // Check if user has roadmaps
+          const hasRoadmaps = dashboardResponse.totalRoadmaps && dashboardResponse.totalRoadmaps > 0;
+          const hasLatestRoadmap = dashboardResponse.latestRoadmap && dashboardResponse.latestRoadmap.id;
+          const explicitRedirect = dashboardResponse.redirectTo;
+          
+          // Multiple ways to determine redirect
+          if (explicitRedirect === 'roadmap' || (hasRoadmaps && hasLatestRoadmap)) {
+            redirectDecision = 'roadmap';
+          } else {
+            redirectDecision = 'questions';
+          }
+          
+          console.log('[Auth] Redirect decision logic: hasRoadmaps=' + hasRoadmaps + ', hasLatestRoadmap=' + hasLatestRoadmap + ', explicitRedirect=' + explicitRedirect + ', decision=' + redirectDecision);
         }
         
-        dashboardResponse = await r.json();
+      } catch (dashboardError) {
+        console.warn('[Auth] Dashboard request failed, using fallback logic:', dashboardError.message);
+        
+        // Fallback: Check localStorage for any previous roadmap data
+        const savedUser = localStorage.getItem('currentUser');
+        const hasCompletedQuestionnaire = localStorage.getItem('ns_completed_questionnaire');
+        
+        if (hasCompletedQuestionnaire === 'true') {
+          redirectDecision = 'roadmap';
+          console.log('[Auth] Fallback: Using localStorage signal for roadmap redirect');
+        } else {
+          redirectDecision = 'questions';
+          console.log('[Auth] Fallback: Default to questions');
+        }
       }
 
-      console.log('[Auth] Dashboard response:', dashboardResponse);
-
-      if (dashboardResponse?.redirectTo) {
-        if (dashboardResponse.redirectTo === 'roadmap') {
-          // User has existing roadmaps, redirect to roadmap page
-          console.log('[Auth] Existing user with roadmaps, redirecting to roadmap');
-          showToast('Welcome back! Continuing your learning journey...');
-          setTimeout(() => globalThis.location.assign('roadmap.html'), 1500);
-        } else {
-          // New user, redirect to questions
-          console.log('[Auth] New user, redirecting to questions');
-          showToast('Welcome! Let\'s create your personalized roadmap...');
-          setTimeout(() => globalThis.location.assign('questions.html'), 1500);
-        }
+      // Execute redirect with UX feedback
+      if (redirectDecision === 'roadmap') {
+        console.log('[Auth] Redirecting to roadmap');
+        showToast('Welcome back! Continuing your learning journey...');
+        setTimeout(() => globalThis.location.assign('roadmap.html'), 1500);
       } else {
-        // Fallback to questions if unclear
-        console.log('[Auth] Unclear redirect, defaulting to questions');
-        showToast('Welcome! Let\'s get started...');
+        console.log('[Auth] Redirecting to questions');
+        showToast('Welcome! Let\'s create your personalized roadmap...');
         setTimeout(() => globalThis.location.assign('questions.html'), 1500);
       }
 
     } catch (error) {
-      console.error('[Auth] Error checking dashboard:', error);
+      console.error('[Auth] Critical error in smart redirect:', error);
+      // Ultimate fallback: always go to questions
       showToast('Welcome! Let\'s get started with your questionnaire...');
-      // Fallback to questions page on error
       setTimeout(() => globalThis.location.assign('questions.html'), 1500);
     }
   }
