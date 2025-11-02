@@ -36,6 +36,15 @@ public class UserDashboardController {
                         List<Roadmap> userRoadmaps = roadmapRepository.findByUser(user);
                         System.out.println("[Dashboard] User has " + userRoadmaps.size() + " roadmaps");
                         
+                        // Debug: List all roadmap IDs and details
+                        if (!userRoadmaps.isEmpty()) {
+                            System.out.println("[Dashboard] Roadmap details:");
+                            for (int i = 0; i < userRoadmaps.size(); i++) {
+                                Roadmap rm = userRoadmaps.get(i);
+                                System.out.println("  [" + i + "] ID=" + rm.getId() + ", Role=" + rm.getRole() + ", Created=" + rm.getCreatedAt());
+                            }
+                        }
+                        
                         DashboardResponse response = new DashboardResponse();
                         response.setUserId(user.getId());
                         response.setUserEmail(user.getEmail());
@@ -45,9 +54,16 @@ public class UserDashboardController {
                         if (!userRoadmaps.isEmpty()) {
                             // Get the most recent roadmap
                             Roadmap latestRoadmap = userRoadmaps.get(userRoadmaps.size() - 1);
-                            response.setLatestRoadmap(LatestRoadmapInfo.from(latestRoadmap));
-                            response.setRedirectTo("roadmap");
-                            System.out.println("[Dashboard] Redirecting to roadmap page");
+                            try {
+                                response.setLatestRoadmap(LatestRoadmapInfo.from(latestRoadmap));
+                                response.setRedirectTo("roadmap");
+                                System.out.println("[Dashboard] Redirecting to roadmap page");
+                            } catch (Exception e) {
+                                System.err.println("[Dashboard] Error processing latest roadmap: " + e.getMessage());
+                                // Fallback: treat as if no roadmaps exist
+                                response.setRedirectTo("questions");
+                                System.out.println("[Dashboard] Fallback: Redirecting to questions page due to roadmap processing error");
+                            }
                         } else {
                             response.setRedirectTo("questions");
                             System.out.println("[Dashboard] Redirecting to questions page");
@@ -102,13 +118,24 @@ public class UserDashboardController {
         private String createdAt;
 
         static LatestRoadmapInfo from(Roadmap roadmap) {
+            if (roadmap == null) {
+                return null;
+            }
+            
             LatestRoadmapInfo info = new LatestRoadmapInfo();
             info.id = roadmap.getId();
             info.role = roadmap.getRole();
             info.experience = roadmap.getExperience();
             info.priority = roadmap.getPriority();
             info.timeCommitment = roadmap.getTimeCommitment();
-            info.createdAt = roadmap.getCreatedAt() == null ? null : roadmap.getCreatedAt().toString();
+            
+            // Defensive handling of createdAt
+            try {
+                info.createdAt = roadmap.getCreatedAt() == null ? null : roadmap.getCreatedAt().toString();
+            } catch (Exception e) {
+                info.createdAt = "Unknown";
+            }
+            
             return info;
         }
 
