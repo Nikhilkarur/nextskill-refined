@@ -2,7 +2,6 @@ package com.nextskill.controller;
 
 import com.nextskill.model.Roadmap;
 import com.nextskill.repository.RoadmapRepository;
-import com.nextskill.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,32 +17,35 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/roadmaps")
 public class RoadmapHistoryController {
     private final RoadmapRepository roadmapRepository;
-    private final UserRepository userRepository;
 
-    public RoadmapHistoryController(RoadmapRepository roadmapRepository, UserRepository userRepository) {
+    public RoadmapHistoryController(RoadmapRepository roadmapRepository) {
         this.roadmapRepository = roadmapRepository;
-        this.userRepository = userRepository;
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/mine")
     public ResponseEntity<List<RoadmapSummary>> myRoadmaps(Authentication auth) {
-        return userRepository.findByEmail(auth.getName())
-                .map(u -> ResponseEntity.ok(
-                        roadmapRepository.findByUser(u).stream().map(RoadmapSummary::from).collect(Collectors.toList())
-                ))
-                .orElseGet(() -> ResponseEntity.ok(List.of()));
+    // Use robust repo method by email to avoid lazy-loading/user join issues
+    List<Roadmap> list = roadmapRepository.findByUserEmailOrderByCreatedAtAsc(auth.getName());
+    return ResponseEntity.ok(list.stream().map(RoadmapSummary::from).collect(Collectors.toList()));
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<RoadmapDetail> getRoadmap(@PathVariable("id") Long id, Authentication auth) {
-        return userRepository.findByEmail(auth.getName()).map(u ->
-            roadmapRepository.findById(id)
-                .filter(r -> r.getUser() != null && r.getUser().getId() != null && r.getUser().getId().equals(u.getId()))
+        return roadmapRepository.findById(id)
+                .filter(r -> r.getUser() != null && r.getUser().getEmail() != null && r.getUser().getEmail().equals(auth.getName()))
                 .map(r -> ResponseEntity.ok(RoadmapDetail.from(r)))
-                .orElseGet(() -> ResponseEntity.notFound().build())
-        ).orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/latest")
+    public ResponseEntity<RoadmapDetail> latest(Authentication auth) {
+        return roadmapRepository.findTopByUserEmailOrderByCreatedAtDesc(auth.getName())
+                .map(RoadmapDetail::from)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     public static class RoadmapSummary {

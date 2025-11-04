@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextSkill · Demo Mode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0b0b0f; color: #e2e8f0; font-family: 'Space Grotesk', sans-serif; }
+    .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+  </style>
+  <script>
+    function seedDemo() {
+      // Minimal sample roadmap JSON
+      const sample = {
+        title: 'Software Engineering Journey (Demo)',
+        difficulty: 'Intermediate',
+        skills: ['JavaScript','React','Node.js','SQL','Git','APIs','Testing','Deployments'],
+        phases: [
+          { name: 'Foundations', duration_weeks: 4, skills: ['JS', 'HTML', 'CSS'] },
+          { name: 'Frontend', duration_weeks: 6, skills: ['React', 'Routing'] },
+          { name: 'Backend', duration_weeks: 6, skills: ['Node', 'APIs', 'DB'] }
+        ]
+      };
+
+      try {
+        localStorage.setItem('ns_completed_questionnaire', 'true');
+        localStorage.setItem('questionnaire-answers', JSON.stringify({1:'software-engineer',2:'mid',3:'technical-skills',4:'10-hours'}));
+        localStorage.setItem('lastRoadmapJson', JSON.stringify(sample));
+        // Optional: fake token so authenticated checks are skipped gracefully
+        localStorage.setItem('ns_token', 'DEMO_TOKEN');
+        document.getElementById('status').textContent = '✅ Demo data seeded. Redirecting...';
+        setTimeout(() => location.assign('roadmap.html'), 800);
+      } catch (e) {
+        document.getElementById('status').textContent = '❌ Failed to seed demo: ' + e.message;
+      }
+    }
+  </script>
+  </head>
+<body class="min-h-screen flex items-center justify-center p-6">
+  <div class="max-w-xl w-full card rounded-xl p-8 text-center">
+    <h1 class="text-2xl font-bold mb-2 text-[#00FF88]">NextSkill · Instant Demo</h1>
+    <p class="text-sm text-gray-300 mb-6">If the live backend is slow or unavailable, use this to preload a demo roadmap and jump straight to the presentation view.</p>
+    <button onclick="seedDemo()" class="px-6 py-3 bg-[#00FF88] text-black font-semibold rounded-lg hover:opacity-90">Start Demo</button>
+    <div id="status" class="mt-4 text-sm text-gray-400"></div>
+  </div>
+</body>
+</html>

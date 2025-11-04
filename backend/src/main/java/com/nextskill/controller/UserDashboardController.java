@@ -38,7 +38,11 @@ public class UserDashboardController {
                         response.setUserEmail(user.getEmail());
                         
                         try {
-                            List<Roadmap> userRoadmaps = roadmapRepository.findByUser(user);
+                            // Prefer robust query by email; fall back to by-entity
+                            List<Roadmap> userRoadmaps = roadmapRepository.findByUserEmailOrderByCreatedAtAsc(user.getEmail());
+                            if (userRoadmaps == null || userRoadmaps.isEmpty()) {
+                                userRoadmaps = roadmapRepository.findByUser(user);
+                            }
                             System.out.println("[Dashboard] User has " + userRoadmaps.size() + " roadmaps");
                             
                             // Debug: List all roadmap IDs and details

@@ -194,36 +194,54 @@
                 
                 // Try to load from backend first
                 try {
-                    const roadmaps = await globalThis.NSHttp.request('/api/roadmaps/mine');
-                    console.log('📊 Backend roadmaps:', roadmaps);
+                    let detail = null;
+                    let latestId = null;
                     
-                    if (roadmaps && roadmaps.length > 0) {
-                        // Get the most recent roadmap
-                        const latest = roadmaps.at(-1);
-                        console.log('📈 Using latest roadmap:', latest);
-                        
-                        // Fetch full details
-                        const detail = await globalThis.NSHttp.request(`/api/roadmaps/${latest.id}`);
-                        console.log('📋 Roadmap detail:', detail);
-                        
-                        if (detail && detail.contentJson) {
-                            // Parse and use backend roadmap
-                            const roadmapData = JSON.parse(detail.contentJson);
-                            currentPath = {
-                                career_path: mapRoleToDisplayName(detail.role),
-                                experience_level: detail.experience,
-                                commitment_level: detail.timeCommitment,
-                                priority: detail.priority,
-                                source: detail.source,
-                                roadmapData: roadmapData,
-                                backendId: detail.id
-                            };
-                            
-                            console.log('✅ Loaded from backend:', currentPath);
-                            updateRoadmapDisplay();
-                            showLoadedFromBackend();
-                            return;
+                    try {
+                        const roadmaps = await globalThis.NSHttp.request('/api/roadmaps/mine');
+                        console.log('📊 Backend roadmaps:', roadmaps);
+                        if (roadmaps && roadmaps.length > 0) {
+                            latestId = roadmaps.at(-1).id;
                         }
+                    } catch (e) {
+                        console.warn('⚠️ /mine failed, will try /latest:', e.message);
+                    }
+
+                    if (!latestId) {
+                        try {
+                            const latest = await globalThis.NSHttp.request('/api/roadmaps/latest');
+                            if (latest && latest.id) latestId = latest.id;
+                        } catch (e2) {
+                            console.warn('⚠️ /latest failed:', e2.message);
+                        }
+                    }
+
+                    if (!latestId) {
+                        // Try id cached by auth redirect
+                        latestId = localStorage.getItem('ns_latest_roadmap_id');
+                    }
+
+                    if (latestId) {
+                        detail = await globalThis.NSHttp.request(`/api/roadmaps/${latestId}`);
+                        console.log('📋 Roadmap detail:', detail);
+                    }
+
+                    if (detail && detail.contentJson) {
+                        const roadmapData = JSON.parse(detail.contentJson);
+                        currentPath = {
+                            career_path: mapRoleToDisplayName(detail.role),
+                            experience_level: detail.experience,
+                            commitment_level: detail.timeCommitment,
+                            priority: detail.priority,
+                            source: detail.source,
+                            roadmapData: roadmapData,
+                            backendId: detail.id
+                        };
+                        try { localStorage.setItem('ns_latest_roadmap_id', String(detail.id)); } catch {}
+                        console.log('✅ Loaded from backend:', currentPath);
+                        updateRoadmapDisplay();
+                        showLoadedFromBackend();
+                        return;
                     }
                 } catch (apiError) {
                     console.warn('⚠️ Backend roadmap load failed:', apiError.message);

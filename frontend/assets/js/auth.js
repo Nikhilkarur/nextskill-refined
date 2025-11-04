@@ -126,6 +126,12 @@
           
           // Multiple ways to determine redirect
           if (explicitRedirect === 'roadmap' || (hasRoadmaps && hasLatestRoadmap)) {
+            // Cache latest roadmap id for roadmap.html fallback retrieval
+            try {
+              if (hasLatestRoadmap) {
+                localStorage.setItem('ns_latest_roadmap_id', String(dashboardResponse.latestRoadmap.id));
+              }
+            } catch {}
             redirectDecision = 'roadmap';
           } else {
             redirectDecision = 'questions';
@@ -137,6 +143,19 @@
       } catch (dashboardError) {
         console.warn('[Auth] Dashboard request failed, using fallback logic:', dashboardError.message);
         
+        // EXTRA: Try querying latest roadmap directly as a resilience step
+        try {
+          const token = localStorage.getItem('ns_token');
+          if (token) {
+            const latest = await (globalThis.NSHttp ? globalThis.NSHttp.request('/api/roadmaps/latest') : fetch('/api/roadmaps/latest', { headers: { 'Authorization': `Bearer ${token}` } }).then(r=>r.ok?r.json():null));
+            if (latest && latest.id) {
+              try { localStorage.setItem('ns_latest_roadmap_id', String(latest.id)); } catch {}
+              redirectDecision = 'roadmap';
+              console.log('[Auth] Fallback: Found latest roadmap via /api/roadmaps/latest');
+            }
+          }
+        } catch {}
+
         // Fallback: Check localStorage for any previous roadmap data
         const savedUser = localStorage.getItem('currentUser');
         const hasCompletedQuestionnaire = localStorage.getItem('ns_completed_questionnaire');
