@@ -10,6 +10,32 @@
   status = 200
   force = true
 
+# Hard-block internal/debug pages from being publicly accessible
+[[redirects]]
+  from = "/debug.html"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/demo.html"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/test-endpoint.html"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/auth-local.html"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/clear-data.html"
+  to = "/404.html"
+  status = 404
+
 [build.environment]
   # Optional: set Node version if needed for any build tools
   NODE_VERSION = "18"

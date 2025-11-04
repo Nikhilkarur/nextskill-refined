@@ -134,7 +134,19 @@
             } catch {}
             redirectDecision = 'roadmap';
           } else {
+            // If dashboard says 'questions', still double-check latest roadmap endpoint as a safety net
             redirectDecision = 'questions';
+            try {
+              const token = localStorage.getItem('ns_token');
+              if (token) {
+                const latestCheck = await (globalThis.NSHttp ? globalThis.NSHttp.request('/api/roadmaps/latest') : fetch('/api/roadmaps/latest', { headers: { 'Authorization': `Bearer ${token}` } }).then(r=>r.ok?r.json():null));
+                if (latestCheck && latestCheck.id) {
+                  try { localStorage.setItem('ns_latest_roadmap_id', String(latestCheck.id)); } catch {}
+                  redirectDecision = 'roadmap';
+                  console.log('[Auth] Post-check: Found latest roadmap via /api/roadmaps/latest');
+                }
+              }
+            } catch (e) { console.warn('[Auth] Post-check latest failed:', e && e.message); }
           }
           
           console.log('[Auth] Redirect decision logic: hasRoadmaps=' + hasRoadmaps + ', hasLatestRoadmap=' + hasLatestRoadmap + ', explicitRedirect=' + explicitRedirect + ', decision=' + redirectDecision);
